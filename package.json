@@ -1,0 +1,15 @@
+{
+  "name": "habit-streaks",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix apps/web run dev",
+    "build": "npm --prefix apps/web run build",
+    "lint": "npm --prefix apps/web run lint",
+    "db:migrate": "npx supabase db push",
+    "db:types": "npx supabase gen types typescript --local > apps/web/src/lib/database.types.ts"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

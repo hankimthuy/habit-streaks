@@ -1,0 +1,7 @@
+Replace this directory's contents with actual PWA icons:
+- icon-192x192.png (192x192)
+- icon-512x512.png (512x512)
+
+You can generate these from any SVG/PNG using tools like:
+- https://realfavicongenerator.net
+- https://www.pwabuilder.com/imageGenerator
