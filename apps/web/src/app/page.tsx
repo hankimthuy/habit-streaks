@@ -10,10 +10,11 @@ import TodayStreaks from "@/components/dashboard/TodayStreaks";
 import GoalStreaks from "@/components/dashboard/GoalStreaks";
 import CreateTypeSelector from "@/components/dashboard/CreateTypeSelector";
 import CreateGoalStreakModal from "@/components/dashboard/CreateGoalStreakModal";
+import Toast from "@/components/ui/Toast";
 import { useDashboard } from "@/lib/hooks/use-dashboard";
 
 export default function DashboardPage() {
-  const { data, weekSummary, loading, today, logGoalStreak, deleteGoalStreak, editGoalStreak, refresh } = useDashboard();
+  const { data, weekSummary, loading, today, logGoalStreak, deleteGoalStreak, editGoalStreak, refresh, loadingGoals, notification, clearNotification } = useDashboard();
   const [selectorOpen, setSelectorOpen] = useState(false);
   const [createMode, setCreateMode] = useState<"daily" | "free" | null>(null);
 
@@ -40,9 +41,16 @@ export default function DashboardPage() {
             <TodayStreaks
               streaks={data?.todayStreaks ?? []}
               today={today}
-              onLog={logGoalStreak}
+              onLog={(goalId, action) => logGoalStreak(goalId, action, true)}
+              loadingGoals={loadingGoals}
             />
-            <GoalStreaks goals={data?.goalStreaks ?? []} onLog={logGoalStreak} onDelete={deleteGoalStreak} onEdit={editGoalStreak} />
+            <GoalStreaks 
+              goals={data?.goalStreaks ?? []} 
+              onLog={(goalId, action) => logGoalStreak(goalId, action, false)} 
+              onDelete={deleteGoalStreak} 
+              onEdit={editGoalStreak}
+              loadingGoals={loadingGoals}
+            />
           </>
         )}
         <div className="h-8" />
@@ -60,6 +68,13 @@ export default function DashboardPage() {
           mode={createMode}
           onClose={() => setCreateMode(null)}
           onCreated={refresh}
+        />
+      )}
+      {notification && (
+        <Toast
+          type={notification.type}
+          message={notification.message}
+          onClose={clearNotification}
         />
       )}
     </>

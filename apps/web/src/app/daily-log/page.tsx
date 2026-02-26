@@ -4,10 +4,11 @@ import BottomNav from "@/components/layout/BottomNav";
 import DailyLogHeader from "@/components/daily-log/DailyLogHeader";
 import StreakCompletionCard from "@/components/daily-log/StreakCompletionCard";
 import TodayStreaks from "@/components/dashboard/TodayStreaks";
+import Toast from "@/components/ui/Toast";
 import { useDashboard } from "@/lib/hooks/use-dashboard";
 
 export default function DailyLogPage() {
-  const { data, today, loading, logGoalStreak } = useDashboard();
+  const { data, today, loading, logGoalStreak, loadingGoals, notification, clearNotification } = useDashboard();
 
   const todayStreaks = data?.todayStreaks ?? [];
   const totalToday = todayStreaks.length;
@@ -33,7 +34,8 @@ export default function DailyLogPage() {
             <TodayStreaks
               streaks={todayStreaks}
               today={today}
-              onLog={logGoalStreak}
+              onLog={(goalId, action) => logGoalStreak(goalId, action, true)}
+              loadingGoals={loadingGoals}
             />
             {completedCount === totalToday && totalToday > 0 && (
               <StreakCompletionCard />
@@ -43,6 +45,13 @@ export default function DailyLogPage() {
         <div className="h-8" />
       </div>
       <BottomNav />
+      {notification && (
+        <Toast
+          type={notification.type}
+          message={notification.message}
+          onClose={clearNotification}
+        />
+      )}
     </>
   );
 }

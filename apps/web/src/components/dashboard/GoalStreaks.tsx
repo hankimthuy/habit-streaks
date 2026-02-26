@@ -11,6 +11,7 @@ interface GoalStreaksProps {
   onLog?: (goalId: string, action: "increment" | "decrement") => void;
   onDelete?: (goalId: string) => void;
   onEdit?: (goalId: string, fields: Record<string, unknown>) => void;
+  loadingGoals?: Set<string>;
 }
 
 const COLOR_MAP: Record<string, { bar: string; iconBg: string; glow: string }> = {
@@ -21,16 +22,18 @@ const COLOR_MAP: Record<string, { bar: string; iconBg: string; glow: string }> =
   amber: { bar: "bg-amber-500", iconBg: "bg-amber-500/20 text-amber-500", glow: "bg-amber-500/20" },
 };
 
-function GoalCard({ goal, onLog, onDelete, onEdit }: {
+function GoalCard({ goal, onLog, onDelete, onEdit, loadingGoals }: {
   goal: DashboardGoalStreak;
   onLog?: (goalId: string, action: "increment" | "decrement") => void;
   onDelete?: (goalId: string) => void;
   onEdit?: (goalId: string, fields: Record<string, unknown>) => void;
+  loadingGoals?: Set<string>;
 }) {
   const [editing, setEditing] = useState(false);
   const isPerfect = goal.current_streak >= goal.target_days;
   const ratio = goal.target_days > 0 ? goal.current_streak / goal.target_days : 0;
   const colors = COLOR_MAP[goal.color] ?? COLOR_MAP.primary;
+  const isLoading = loadingGoals?.has(goal.id);
 
   const statusLabel = isPerfect ? "Perfect" : ratio >= 0.5 ? "On Track" : "Keep Going";
   const statusColor = isPerfect ? "text-primary" : "text-accent-green";
@@ -104,22 +107,29 @@ function GoalCard({ goal, onLog, onDelete, onEdit }: {
             )}
             <button
               onClick={(e) => { e.stopPropagation(); onLog(goal.id, "decrement"); }}
-              disabled={goal.current_streak <= 0}
+              disabled={goal.current_streak <= 0 || isLoading}
               className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-500 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             >
-              <MaterialIcon name="remove" className="text-base" />
+              {isLoading ? (
+                <div className="w-4 h-4 border-2 border-slate-400 border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <MaterialIcon name="remove" className="text-base" />
+              )}
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); onLog(goal.id, "increment"); }}
-              disabled={isPerfect}
+              disabled={isLoading}
               className={`h-8 px-4 rounded-full font-bold text-xs flex items-center gap-1 transition-all ${
-                isPerfect
-                  ? "bg-accent-green/20 text-accent-green cursor-default"
+                isLoading
+                  ? "bg-slate-700 text-slate-400 cursor-not-allowed"
                   : `${colors.bar} text-white hover:opacity-90 shadow-lg`
               }`}
             >
-              {isPerfect ? (
-                <><MaterialIcon name="check" className="text-sm" /> Done!</>
+              {isLoading ? (
+                <>
+                  <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  Loading...
+                </>
               ) : (
                 <><MaterialIcon name="add" className="text-sm" /> Check In</>
               )}
@@ -146,7 +156,7 @@ function GoalCard({ goal, onLog, onDelete, onEdit }: {
   );
 }
 
-export default function GoalStreaks({ goals, onLog, onDelete, onEdit }: GoalStreaksProps) {
+export default function GoalStreaks({ goals, onLog, onDelete, onEdit, loadingGoals }: GoalStreaksProps) {
   if (goals.length === 0) return null;
 
   return (
@@ -159,7 +169,14 @@ export default function GoalStreaks({ goals, onLog, onDelete, onEdit }: GoalStre
       </div>
       <div className="flex flex-col gap-4">
         {goals.map((goal) => (
-          <GoalCard key={goal.id} goal={goal} onLog={onLog} onDelete={onDelete} onEdit={onEdit} />
+          <GoalCard 
+            key={goal.id} 
+            goal={goal} 
+            onLog={onLog} 
+            onDelete={onDelete} 
+            onEdit={onEdit}
+            loadingGoals={loadingGoals}
+          />
         ))}
       </div>
     </section>

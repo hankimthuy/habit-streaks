@@ -7,6 +7,7 @@ interface TodayStreaksProps {
   streaks: DashboardGoalStreak[];
   today: string;
   onLog?: (goalId: string, action: "increment" | "decrement") => void;
+  loadingGoals?: Set<string>;
 }
 
 const COLOR_MAP: Record<string, { iconBg: string; bar: string; glow: string }> = {
@@ -21,14 +22,17 @@ function TodayStreakCard({
   streak,
   today,
   onLog,
+  loadingGoals,
 }: {
   streak: DashboardGoalStreak;
   today: string;
   onLog?: (goalId: string, action: "increment" | "decrement") => void;
+  loadingGoals?: Set<string>;
 }) {
   const checkedToday = streak.last_checkin_date === today;
   const isPerfect = streak.current_streak >= streak.target_days;
   const colors = COLOR_MAP[streak.color] ?? COLOR_MAP.primary;
+  const isLoading = loadingGoals?.has(streak.id);
 
   return (
     <>
@@ -59,23 +63,34 @@ function TodayStreakCard({
             <>
               <button
                 onClick={(e) => { e.stopPropagation(); onLog(streak.id, "decrement"); }}
-                disabled={!checkedToday}
+                disabled={!checkedToday || isLoading}
                 className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-500 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
               >
-                <MaterialIcon name="remove" className="text-base" />
+                {isLoading ? (
+                  <div className="w-4 h-4 border-2 border-slate-400 border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <MaterialIcon name="remove" className="text-base" />
+                )}
               </button>
               <button
                 onClick={(e) => { e.stopPropagation(); onLog(streak.id, "increment"); }}
-                disabled={checkedToday || isPerfect}
+                disabled={checkedToday || isPerfect || isLoading}
                 className={`h-8 px-4 rounded-full font-bold text-xs flex items-center gap-1 transition-all ${
                   checkedToday
                     ? "bg-accent-green/20 text-accent-green cursor-default"
                     : isPerfect
                       ? "bg-accent-green/20 text-accent-green cursor-default"
-                      : `${colors.bar} text-white hover:opacity-90 shadow-lg`
+                      : isLoading
+                        ? "bg-slate-700 text-slate-400 cursor-not-allowed"
+                        : `${colors.bar} text-white hover:opacity-90 shadow-lg`
                 }`}
               >
-                {checkedToday ? (
+                {isLoading ? (
+                  <>
+                    <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                    Loading...
+                  </>
+                ) : checkedToday ? (
                   <><MaterialIcon name="check" className="text-sm" /> Done</>
                 ) : isPerfect ? (
                   <><MaterialIcon name="check" className="text-sm" /> Done!</>
@@ -91,7 +106,7 @@ function TodayStreakCard({
   );
 }
 
-export default function TodayStreaks({ streaks, today, onLog }: TodayStreaksProps) {
+export default function TodayStreaks({ streaks, today, onLog, loadingGoals }: TodayStreaksProps) {
   const completedCount = streaks.filter((s) => s.current_streak >= s.target_days).length;
 
   if (streaks.length === 0) return null;
@@ -117,6 +132,7 @@ export default function TodayStreaks({ streaks, today, onLog }: TodayStreaksProp
             streak={streak}
             today={today}
             onLog={onLog}
+            loadingGoals={loadingGoals}
           />
         ))}
       </div>

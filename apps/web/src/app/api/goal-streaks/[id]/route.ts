@@ -32,10 +32,8 @@ export async function PATCH(
   let newLastCheckinDate = goal.last_checkin_date;
 
   if (action === "increment") {
-    // For daily-mode streaks, enforce one check-in per day
-    if (goal.mode === "daily" && date && goal.last_checkin_date === date) {
-      return NextResponse.json({ error: "Already checked in today" }, { status: 409 });
-    }
+    // Note: Removed daily mode restriction to allow multiple checkins for goal streaks
+    // Users can now check in multiple times to catch up on missed days
     newStreak = Math.min(goal.current_streak + 1, goal.target_days);
     if (date) newLastCheckinDate = date;
   } else if (action === "decrement") {

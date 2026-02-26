@@ -43,6 +43,8 @@ export function useDashboard() {
   const [weekSummary, setWeekSummary] = useState<WeekSummary>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [loadingGoals, setLoadingGoals] = useState<Set<string>>(new Set());
+  const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const today = vnToday();
 
   const fetchDashboard = useCallback(async () => {
@@ -78,21 +80,52 @@ export function useDashboard() {
   }, []);
 
   const logGoalStreak = useCallback(
-    async (goalId: string, action: "increment" | "decrement" = "increment") => {
+    async (goalId: string, action: "increment" | "decrement" = "increment", isTodayGrind = false) => {
+      // For today's grind, prevent multiple clicks on the same goal
+      // For goal streaks, allow multiple checkins (catch up for missed days)
+      if (isTodayGrind && loadingGoals.has(goalId)) return;
+      
+      setLoadingGoals(prev => new Set(prev).add(goalId));
+      
       try {
         const res = await fetch(`/api/goal-streaks/${goalId}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ action, date: today }),
         });
+        
         if (res.ok) {
           await fetchDashboard();
+          const goal = data?.todayStreaks.find(g => g.id === goalId) || data?.goalStreaks.find(g => g.id === goalId);
+          const goalTitle = goal?.title || "Goal";
+          
+          setNotification({
+            type: 'success',
+            message: action === 'increment' 
+              ? `${goalTitle} checked in successfully!` 
+              : `${goalTitle} checked out successfully!`
+          });
+        } else {
+          const err = await res.json();
+          throw new Error(err.error || "Failed to update goal");
         }
-      } catch {
-        // silent
+      } catch (e: any) {
+        setNotification({
+          type: 'error',
+          message: e.message || "Failed to update goal. Please try again."
+        });
+      } finally {
+        setLoadingGoals(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(goalId);
+          return newSet;
+        });
+        
+        // Auto-clear notification after 3 seconds
+        setTimeout(() => setNotification(null), 3000);
       }
     },
-    [fetchDashboard, today]
+    [fetchDashboard, today, data, loadingGoals]
   );
 
   const deleteGoalStreak = useCallback(
@@ -134,5 +167,8 @@ export function useDashboard() {
     deleteGoalStreak,
     editGoalStreak,
     refresh: fetchDashboard,
+    loadingGoals,
+    notification,
+    clearNotification: () => setNotification(null),
   };
 }
