@@ -1,20 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { vnToday, getVNWeek, formatDateISO } from "@/lib/date-utils";
-
-export interface DashboardTask {
-  id: string;
-  user_id: string;
-  title: string;
-  subtitle: string;
-  icon: string;
-  type: "positive" | "negative";
-  category: string;
-  created_at: string;
-  completed: boolean;
-  log_id: string | null;
-}
+import { vnToday, getVNWeek } from "@/lib/date-utils";
 
 export interface DashboardGoalStreak {
   id: string;
@@ -27,6 +14,10 @@ export interface DashboardGoalStreak {
   current_streak: number;
   longest_streak: number;
   reward_title: string | null;
+  start_date: string | null;
+  end_date: string | null;
+  mode: "daily" | "free";
+  last_checkin_date: string | null;
   created_at: string;
 }
 
@@ -34,7 +25,7 @@ export interface DashboardStats {
   currentStreak: number;
   completionRate: number;
   completedToday: number;
-  totalHabits: number;
+  totalToday: number;
 }
 
 export interface WeekSummary {
@@ -42,7 +33,7 @@ export interface WeekSummary {
 }
 
 interface DashboardData {
-  tasks: DashboardTask[];
+  todayStreaks: DashboardGoalStreak[];
   goalStreaks: DashboardGoalStreak[];
   stats: DashboardStats;
 }
@@ -92,7 +83,7 @@ export function useDashboard() {
         const res = await fetch(`/api/goal-streaks/${goalId}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ action }),
+          body: JSON.stringify({ action, date: today }),
         });
         if (res.ok) {
           await fetchDashboard();
@@ -101,34 +92,7 @@ export function useDashboard() {
         // silent
       }
     },
-    [fetchDashboard]
-  );
-
-  const deleteHabit = useCallback(
-    async (habitId: string) => {
-      try {
-        const res = await fetch(`/api/habits/${habitId}`, { method: "DELETE" });
-        if (res.ok) {
-          await fetchDashboard();
-          await fetchWeekSummary();
-        }
-      } catch { /* silent */ }
-    },
-    [fetchDashboard, fetchWeekSummary]
-  );
-
-  const editHabit = useCallback(
-    async (habitId: string, fields: Record<string, unknown>) => {
-      try {
-        const res = await fetch(`/api/habits/${habitId}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(fields),
-        });
-        if (res.ok) await fetchDashboard();
-      } catch { /* silent */ }
-    },
-    [fetchDashboard]
+    [fetchDashboard, today]
   );
 
   const deleteGoalStreak = useCallback(
@@ -155,26 +119,6 @@ export function useDashboard() {
     [fetchDashboard]
   );
 
-  const toggleHabit = useCallback(
-    async (habitId: string) => {
-      try {
-        const res = await fetch("/api/habit-logs", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ habit_id: habitId, date: today }),
-        });
-        if (res.ok) {
-          // Refresh dashboard data
-          await fetchDashboard();
-          await fetchWeekSummary();
-        }
-      } catch {
-        // silent
-      }
-    },
-    [today, fetchDashboard, fetchWeekSummary]
-  );
-
   useEffect(() => {
     fetchDashboard();
     fetchWeekSummary();
@@ -186,10 +130,7 @@ export function useDashboard() {
     loading,
     error,
     today,
-    toggleHabit,
     logGoalStreak,
-    deleteHabit,
-    editHabit,
     deleteGoalStreak,
     editGoalStreak,
     refresh: fetchDashboard,

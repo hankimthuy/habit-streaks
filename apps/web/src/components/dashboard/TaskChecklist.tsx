@@ -4,7 +4,16 @@ import { useState } from "react";
 import MaterialIcon from "@/components/icons/MaterialIcon";
 import ActionMenu from "@/components/ui/ActionMenu";
 import EditModal, { type EditField } from "@/components/ui/EditModal";
-import type { DashboardTask } from "@/lib/hooks/use-dashboard";
+// Legacy type — kept for backward compatibility
+interface DashboardTask {
+  id: string;
+  title: string;
+  subtitle: string;
+  icon: string;
+  type: "positive" | "negative";
+  category: string;
+  completed: boolean;
+}
 
 interface TaskChecklistProps {
   tasks: DashboardTask[];

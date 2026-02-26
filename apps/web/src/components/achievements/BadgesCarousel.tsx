@@ -3,7 +3,7 @@
 import MaterialIcon from "@/components/icons/MaterialIcon";
 import type { AchievementData } from "@/lib/hooks/use-achievements";
 
-interface BadgesCarouselProps {
+interface AwardsGridProps {
   achievements: AchievementData[];
 }
 
@@ -16,37 +16,55 @@ const GRADIENTS = [
   "from-pink-400 to-pink-700",
 ];
 
-export default function BadgesCarousel({ achievements }: BadgesCarouselProps) {
+export default function BadgesCarousel({ achievements }: AwardsGridProps) {
   if (achievements.length === 0) return null;
 
+  const unlocked = achievements.filter((a) => a.unlocked);
+  const locked = achievements.filter((a) => !a.unlocked);
+  const sorted = [...unlocked, ...locked];
+  const unlockedCount = unlocked.length;
+
   return (
-    <div className="mb-8 pl-4">
-      <h2 className="text-lg font-bold text-white mb-4 px-2">Badges</h2>
-      <div className="flex overflow-x-auto gap-4 pb-4 pr-4 hide-scrollbar">
-        {achievements.map((a, i) => {
+    <div className="px-4 mb-6">
+      <div className="flex items-center justify-between mb-3 px-1">
+        <h2 className="text-lg font-bold text-white">
+          Badges
+        </h2>
+        <span className="text-xs font-semibold text-slate-400">
+          {unlockedCount}/{achievements.length} unlocked
+        </span>
+      </div>
+      <div className="grid grid-cols-5 gap-3">
+        {sorted.map((a, i) => {
           const gradient = GRADIENTS[i % GRADIENTS.length];
+          const isUnlocked = a.unlocked;
+
           return (
             <div
               key={a.id}
-              className={`flex flex-col items-center gap-2 min-w-[80px] ${
-                !a.unlocked ? "opacity-40" : ""
-              }`}
+              className="flex flex-col items-center gap-1.5 group"
             >
-              <div
-                className={`w-16 h-16 rounded-full flex items-center justify-center border-2 ${
-                  a.unlocked
-                    ? `bg-gradient-to-br ${gradient} shadow-lg border-white/10`
-                    : "bg-surface-dark border-dashed border-slate-600"
-                }`}
-              >
-                <MaterialIcon
-                  name={a.unlocked ? a.icon : "lock"}
-                  className={`text-3xl ${a.unlocked ? "text-white" : "text-slate-400"}`}
-                />
+              <div className="relative">
+                {/* Glow effect for unlocked */}
+                {isUnlocked && (
+                  <div className={`absolute inset-0 bg-gradient-to-br ${gradient} rounded-full blur-md opacity-40`} />
+                )}
+                <div
+                  className={`relative w-11 h-11 rounded-full flex items-center justify-center border transition-all ${
+                    isUnlocked
+                      ? `bg-gradient-to-br ${gradient} border-white/20 shadow-md`
+                      : "bg-surface-dark border-dashed border-slate-600/60"
+                  }`}
+                >
+                  <MaterialIcon
+                    name={isUnlocked ? a.icon : "lock"}
+                    className={`text-xl ${isUnlocked ? "text-white" : "text-slate-500"}`}
+                  />
+                </div>
               </div>
               <span
-                className={`text-xs text-center ${
-                  a.unlocked ? "font-bold text-slate-200" : "font-medium text-slate-400"
+                className={`text-[9px] text-center leading-tight line-clamp-2 ${
+                  isUnlocked ? "font-bold text-slate-200" : "font-medium text-slate-500"
                 }`}
               >
                 {a.name}

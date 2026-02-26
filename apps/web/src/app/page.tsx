@@ -6,14 +6,21 @@ import BottomNav from "@/components/layout/BottomNav";
 import FloatingActionButton from "@/components/layout/FloatingActionButton";
 import WeeklyCalendarStrip from "@/components/dashboard/WeeklyCalendarStrip";
 import StatsOverview from "@/components/dashboard/StatsOverview";
-import TaskChecklist from "@/components/dashboard/TaskChecklist";
+import TodayStreaks from "@/components/dashboard/TodayStreaks";
 import GoalStreaks from "@/components/dashboard/GoalStreaks";
-import CreateHabitModal from "@/components/dashboard/CreateHabitModal";
+import CreateTypeSelector from "@/components/dashboard/CreateTypeSelector";
+import CreateGoalStreakModal from "@/components/dashboard/CreateGoalStreakModal";
 import { useDashboard } from "@/lib/hooks/use-dashboard";
 
 export default function DashboardPage() {
-  const { data, weekSummary, loading, toggleHabit, logGoalStreak, deleteHabit, editHabit, deleteGoalStreak, editGoalStreak, refresh } = useDashboard();
-  const [modalOpen, setModalOpen] = useState(false);
+  const { data, weekSummary, loading, today, logGoalStreak, deleteGoalStreak, editGoalStreak, refresh } = useDashboard();
+  const [selectorOpen, setSelectorOpen] = useState(false);
+  const [createMode, setCreateMode] = useState<"daily" | "free" | null>(null);
+
+  const handleTypeSelect = (mode: "daily" | "free") => {
+    setSelectorOpen(false);
+    setCreateMode(mode);
+  };
 
   return (
     <>
@@ -30,24 +37,31 @@ export default function DashboardPage() {
           </div>
         ) : (
           <>
-            <TaskChecklist
-              tasks={data?.tasks ?? []}
-              onToggle={toggleHabit}
-              onDelete={deleteHabit}
-              onEdit={editHabit}
+            <TodayStreaks
+              streaks={data?.todayStreaks ?? []}
+              today={today}
+              onLog={logGoalStreak}
             />
             <GoalStreaks goals={data?.goalStreaks ?? []} onLog={logGoalStreak} onDelete={deleteGoalStreak} onEdit={editGoalStreak} />
           </>
         )}
         <div className="h-8" />
       </main>
-      <FloatingActionButton onClick={() => setModalOpen(true)} />
+      <FloatingActionButton onClick={() => setSelectorOpen(true)} />
       <BottomNav />
-      <CreateHabitModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onCreated={refresh}
+      <CreateTypeSelector
+        open={selectorOpen}
+        onClose={() => setSelectorOpen(false)}
+        onSelect={handleTypeSelect}
       />
+      {createMode && (
+        <CreateGoalStreakModal
+          open={!!createMode}
+          mode={createMode}
+          onClose={() => setCreateMode(null)}
+          onCreated={refresh}
+        />
+      )}
     </>
   );
 }

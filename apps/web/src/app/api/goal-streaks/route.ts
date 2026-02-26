@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { title, subtitle, icon, color, target_days, reward_title } = body;
+  const { title, subtitle, icon, color, target_days, reward_title, start_date, end_date, mode } = body;
 
   if (!title) {
     return NextResponse.json({ error: "Title is required" }, { status: 400 });
@@ -49,6 +49,9 @@ export async function POST(request: NextRequest) {
       color: color ?? "primary",
       target_days: target_days ?? 7,
       reward_title: reward_title ?? null,
+      start_date: start_date ?? null,
+      end_date: end_date ?? null,
+      mode: mode ?? "daily",
     })
     .select()
     .single();

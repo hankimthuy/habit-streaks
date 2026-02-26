@@ -14,7 +14,7 @@ export async function PATCH(
   }
 
   const body = await request.json();
-  const { action, current_streak } = body;
+  const { action, current_streak, date } = body;
 
   // Fetch current goal streak
   const { data: goal, error: fetchErr } = await supabase
@@ -29,11 +29,21 @@ export async function PATCH(
   }
 
   let newStreak = goal.current_streak;
+  let newLastCheckinDate = goal.last_checkin_date;
 
   if (action === "increment") {
+    // For daily-mode streaks, enforce one check-in per day
+    if (goal.mode === "daily" && date && goal.last_checkin_date === date) {
+      return NextResponse.json({ error: "Already checked in today" }, { status: 409 });
+    }
     newStreak = Math.min(goal.current_streak + 1, goal.target_days);
+    if (date) newLastCheckinDate = date;
   } else if (action === "decrement") {
     newStreak = Math.max(goal.current_streak - 1, 0);
+    // Clear last_checkin_date when reverting today's check-in
+    if (date && goal.last_checkin_date === date) {
+      newLastCheckinDate = null;
+    }
   } else if (typeof current_streak === "number") {
     newStreak = Math.max(0, Math.min(current_streak, goal.target_days));
   }
@@ -45,6 +55,7 @@ export async function PATCH(
     .update({
       current_streak: newStreak,
       longest_streak: newLongest,
+      last_checkin_date: newLastCheckinDate,
     })
     .eq("id", params.id)
     .eq("user_id", userId)

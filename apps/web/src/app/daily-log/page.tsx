@@ -2,21 +2,20 @@
 
 import BottomNav from "@/components/layout/BottomNav";
 import DailyLogHeader from "@/components/daily-log/DailyLogHeader";
-import HabitChecklistSection from "@/components/daily-log/HabitChecklistSection";
 import StreakCompletionCard from "@/components/daily-log/StreakCompletionCard";
+import TodayStreaks from "@/components/dashboard/TodayStreaks";
 import { useDashboard } from "@/lib/hooks/use-dashboard";
 
 export default function DailyLogPage() {
-  const { data, loading, toggleHabit } = useDashboard();
+  const { data, today, loading, logGoalStreak } = useDashboard();
 
-  const tasks = data?.tasks ?? [];
-  const positiveHabits = tasks.filter((t) => t.type === "positive");
-  const negativeHabits = tasks.filter((t) => t.type === "negative");
-
-  const totalHabits = tasks.length;
-  const completedCount = tasks.filter((t) => t.completed).length;
+  const todayStreaks = data?.todayStreaks ?? [];
+  const totalToday = todayStreaks.length;
+  const completedCount = todayStreaks.filter(
+    (s) => s.current_streak >= s.target_days
+  ).length;
   const progressPercent =
-    totalHabits > 0 ? Math.round((completedCount / totalHabits) * 100) : 0;
+    totalToday > 0 ? Math.round((completedCount / totalToday) * 100) : 0;
 
   return (
     <>
@@ -31,25 +30,12 @@ export default function DailyLogPage() {
           </div>
         ) : (
           <>
-            <HabitChecklistSection
-              title="The Do's"
-              subtitle="Positive Habits"
-              icon="check_circle"
-              iconColor="bg-accent-green/10 text-accent-green"
-              type="positive"
-              habits={positiveHabits}
-              onToggle={toggleHabit}
+            <TodayStreaks
+              streaks={todayStreaks}
+              today={today}
+              onLog={logGoalStreak}
             />
-            <HabitChecklistSection
-              title="The Don'ts"
-              subtitle="Avoidance Goals"
-              icon="block"
-              iconColor="bg-primary/10 text-primary"
-              type="negative"
-              habits={negativeHabits}
-              onToggle={toggleHabit}
-            />
-            {completedCount === totalHabits && totalHabits > 0 && (
+            {completedCount === totalToday && totalToday > 0 && (
               <StreakCompletionCard />
             )}
           </>

@@ -12,7 +12,16 @@ import XPProgress from "@/components/achievements/XPProgress";
 import { useAchievements } from "@/lib/hooks/use-achievements";
 
 export default function AchievementsPage() {
-  const { achievements, loading } = useAchievements();
+  const {
+    achievements,
+    rewards,
+    profile,
+    activity,
+    currentStreak,
+    timeframe,
+    changeTimeframe,
+    loading,
+  } = useAchievements();
 
   return (
     <>
@@ -25,22 +34,24 @@ export default function AchievementsPage() {
             <MaterialIcon name="settings" />
           </button>
         </div>
-        <StreakCounter />
-        <TimeframeToggle />
+        <StreakCounter streak={currentStreak} />
+        <TimeframeToggle value={timeframe} onChange={changeTimeframe} />
       </div>
 
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto pb-24 hide-scrollbar">
-        <ActivityHeatmap />
+        <ActivityHeatmap activity={activity} timeframe={timeframe} />
         {loading ? (
           <div className="flex items-center justify-center py-12">
             <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
-          <BadgesCarousel achievements={achievements} />
+          <>
+            <BadgesCarousel achievements={achievements} />
+            <RewardCard rewards={rewards} />
+            <XPProgress profile={profile} currentStreak={currentStreak} />
+          </>
         )}
-        <RewardCard />
-        <XPProgress />
       </div>
 
       <BottomNav />

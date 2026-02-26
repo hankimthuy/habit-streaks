@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createApiSupabaseClient, getDefaultUserId } from "@/lib/supabase-server";
+import { ACHIEVEMENT_DEFINITIONS } from "@/lib/constants/leveling";
 
 // POST /api/seed — seed default data for the current dev user
 // Requires: RLS disabled + dev user created via SQL migration (00002_seed_data.sql)
@@ -60,10 +61,16 @@ export async function POST() {
     results.push("Created Gym Workout habit.");
   }
 
-  // Generate gym dates: Mon(1), Wed(3), Fri(5), Sun(0) from 2025-02-24 to 2025-03-30
+  // Generate gym dates: Mon(1), Wed(3), Fri(5), Sun(0) for the last 5 weeks
+  // Uses relative dates so data always falls within all timeframe ranges
   const gymDays = [0, 1, 3, 5]; // JS day indices: Sun=0, Mon=1, Wed=3, Fri=5
-  const gymStart = new Date("2025-02-24T00:00:00+07:00");
-  const gymEnd = new Date("2025-03-30T23:59:59+07:00");
+  const nowLocal = new Date(
+    new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
+  );
+  const gymEnd = new Date(nowLocal);
+  gymEnd.setDate(gymEnd.getDate() - 1); // yesterday (so we don't seed future)
+  const gymStart = new Date(gymEnd);
+  gymStart.setDate(gymEnd.getDate() - 34); // ~5 weeks back
   const gymDates: string[] = [];
 
   for (
@@ -78,6 +85,13 @@ export async function POST() {
       gymDates.push(`${y}-${m}-${day}`);
     }
   }
+
+  // Delete old habit logs for this habit so stale data doesn't accumulate
+  await supabase
+    .from("habit_logs")
+    .delete()
+    .eq("habit_id", gymHabitId)
+    .eq("user_id", userId);
 
   // Insert habit logs for all gym dates (only past/today dates as completed, future as not completed)
   const today = new Date(
@@ -142,6 +156,113 @@ export async function POST() {
         "Created goal streak: 7 Americanos → 1 Milk Coffee (1/7 completed from 23 Feb)."
       );
     }
+  }
+
+  // ============================================================
+  // 3. Achievements — seed all achievement definitions
+  // ============================================================
+  const { data: existingAchievements } = await supabase
+    .from("achievements")
+    .select("name")
+    .eq("user_id", userId);
+
+  const existingNames = new Set((existingAchievements ?? []).map((a) => a.name));
+  const newAchievements = ACHIEVEMENT_DEFINITIONS.filter(
+    (a) => !existingNames.has(a.name)
+  );
+
+  if (newAchievements.length > 0) {
+    // Unlock some achievements for demo purposes
+    const unlockedNames = new Set(["First Step", "3-Day Spark", "Week Warrior", "Goal Setter", "Early Bird"]);
+    const achievementRows = newAchievements.map((a) => ({
+      user_id: userId,
+      name: a.name,
+      icon: a.icon,
+      description: a.description,
+      unlocked: unlockedNames.has(a.name),
+      unlocked_at: unlockedNames.has(a.name) ? new Date().toISOString() : null,
+    }));
+
+    const { error: achErr } = await supabase
+      .from("achievements")
+      .insert(achievementRows);
+
+    if (achErr) {
+      results.push(`Failed to seed achievements: ${achErr.message}`);
+    } else {
+      results.push(
+        `Seeded ${achievementRows.length} achievements (${unlockedNames.size} unlocked).`
+      );
+    }
+  } else {
+    results.push("Achievements already seeded, skipping.");
+  }
+
+  // ============================================================
+  // 4. Rewards — seed sample rewards
+  // ============================================================
+  const { data: existingRewards } = await supabase
+    .from("rewards")
+    .select("title")
+    .eq("user_id", userId);
+
+  const existingRewardTitles = new Set((existingRewards ?? []).map((r) => r.title));
+  const rewardDefs = [
+    {
+      title: "Free Milk Coffee",
+      description: "You hit your 7-day Americano goal!",
+      icon: "local_cafe",
+      unlocked: true,
+      redeemed: false,
+      valid_until: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+      title: "Premium Dark Theme",
+      description: "Reach Level 5 to unlock this exclusive theme",
+      icon: "palette",
+      unlocked: false,
+      redeemed: false,
+      valid_until: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+      title: "Streak Shield",
+      description: "Protect your streak for 1 day if you miss",
+      icon: "shield",
+      unlocked: false,
+      redeemed: false,
+      valid_until: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+  ];
+
+  const newRewards = rewardDefs.filter((r) => !existingRewardTitles.has(r.title));
+  if (newRewards.length > 0) {
+    const rewardRows = newRewards.map((r) => ({
+      user_id: userId,
+      ...r,
+    }));
+
+    const { error: rewErr } = await supabase.from("rewards").insert(rewardRows);
+    if (rewErr) {
+      results.push(`Failed to seed rewards: ${rewErr.message}`);
+    } else {
+      results.push(`Seeded ${rewardRows.length} rewards.`);
+    }
+  } else {
+    results.push("Rewards already seeded, skipping.");
+  }
+
+  // ============================================================
+  // 5. Profile XP — set sample XP for demo
+  // ============================================================
+  const { error: xpErr } = await supabase
+    .from("profiles")
+    .update({ xp: 1350, level: 3 })
+    .eq("id", userId);
+
+  if (xpErr) {
+    results.push(`Failed to update profile XP: ${xpErr.message}`);
+  } else {
+    results.push("Set profile XP to 1350 (Level 3).");
   }
 
   return NextResponse.json({

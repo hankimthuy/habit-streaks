@@ -128,6 +128,10 @@ export interface Database {
           current_streak: number;
           longest_streak: number;
           reward_title: string | null;
+          start_date: string | null;
+          end_date: string | null;
+          mode: "daily" | "free";
+          last_checkin_date: string | null;
           created_at: string;
         };
         Insert: {
@@ -141,6 +145,10 @@ export interface Database {
           current_streak?: number;
           longest_streak?: number;
           reward_title?: string | null;
+          start_date?: string | null;
+          end_date?: string | null;
+          mode?: "daily" | "free";
+          last_checkin_date?: string | null;
           created_at?: string;
         };
         Update: {
@@ -152,6 +160,10 @@ export interface Database {
           current_streak?: number;
           longest_streak?: number;
           reward_title?: string | null;
+          start_date?: string | null;
+          end_date?: string | null;
+          mode?: "daily" | "free";
+          last_checkin_date?: string | null;
         };
         Relationships: [
           {
