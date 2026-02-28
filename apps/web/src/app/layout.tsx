@@ -6,8 +6,8 @@ export const metadata: Metadata = {
   description: "Track your habits, build streaks, earn rewards.",
   manifest: "/manifest.json",
   icons: {
-    icon: "/icons/icon-192x192.png",
-    apple: "/icons/icon-192x192.png",
+    icon: "/favicon.ico",
+    apple: "/favicon.ico",
   },
 };
 
@@ -28,7 +28,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Habit Streaks" />
-        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+        <link rel="apple-touch-icon" href="/favicon.ico" />
         <link
           href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap"
           rel="stylesheet"
