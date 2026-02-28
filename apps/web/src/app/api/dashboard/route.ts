@@ -11,6 +11,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       todayStreaks: [],
       goalStreaks: [],
+      doDonts: [],
       stats: { currentStreak: 0, completionRate: 0, completedToday: 0, totalToday: 0 },
     });
   }
@@ -42,6 +43,14 @@ export async function GET(request: NextRequest) {
     return date >= s.start_date && date <= s.end_date;
   });
 
+  // Do's & Don'ts: active rules
+  const doDonts = goalStreaks.filter((s) => {
+    if (s.mode !== "do_dont") return false;
+    if (s.start_date && date < s.start_date) return false;
+    if (s.end_date && date > s.end_date) return false;
+    return true;
+  });
+
   // Stats
   const totalToday = todayStreaks.length;
   const completedToday = todayStreaks.filter(
@@ -57,7 +66,8 @@ export async function GET(request: NextRequest) {
 
   return NextResponse.json({
     todayStreaks,
-    goalStreaks,
+    goalStreaks: goalStreaks.filter((s) => s.mode === "free"),
+    doDonts,
     stats: {
       currentStreak,
       completionRate,

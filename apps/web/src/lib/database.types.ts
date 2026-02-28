@@ -130,7 +130,7 @@ export interface Database {
           reward_title: string | null;
           start_date: string | null;
           end_date: string | null;
-          mode: "daily" | "free";
+          mode: "daily" | "free" | "do_dont";
           last_checkin_date: string | null;
           created_at: string;
         };
@@ -147,7 +147,7 @@ export interface Database {
           reward_title?: string | null;
           start_date?: string | null;
           end_date?: string | null;
-          mode?: "daily" | "free";
+          mode?: "daily" | "free" | "do_dont";
           last_checkin_date?: string | null;
           created_at?: string;
         };
@@ -162,7 +162,7 @@ export interface Database {
           reward_title?: string | null;
           start_date?: string | null;
           end_date?: string | null;
-          mode?: "daily" | "free";
+          mode?: "daily" | "free" | "do_dont";
           last_checkin_date?: string | null;
         };
         Relationships: [

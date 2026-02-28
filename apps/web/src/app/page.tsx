@@ -8,6 +8,7 @@ import WeeklyCalendarStrip from "@/components/dashboard/WeeklyCalendarStrip";
 import StatsOverview from "@/components/dashboard/StatsOverview";
 import TodayStreaks from "@/components/dashboard/TodayStreaks";
 import GoalStreaks from "@/components/dashboard/GoalStreaks";
+import DosAndDontsList from "@/components/dashboard/DosAndDontsList";
 import CreateTypeSelector from "@/components/dashboard/CreateTypeSelector";
 import CreateGoalStreakModal from "@/components/dashboard/CreateGoalStreakModal";
 import Toast from "@/components/ui/Toast";
@@ -16,9 +17,9 @@ import { useDashboard } from "@/lib/hooks/use-dashboard";
 export default function DashboardPage() {
   const { data, weekSummary, loading, today, logGoalStreak, deleteGoalStreak, editGoalStreak, refresh, loadingGoals, notification, clearNotification } = useDashboard();
   const [selectorOpen, setSelectorOpen] = useState(false);
-  const [createMode, setCreateMode] = useState<"daily" | "free" | null>(null);
+  const [createMode, setCreateMode] = useState<"daily" | "free" | "do_dont" | null>(null);
 
-  const handleTypeSelect = (mode: "daily" | "free") => {
+  const handleTypeSelect = (mode: "daily" | "free" | "do_dont") => {
     setSelectorOpen(false);
     setCreateMode(mode);
   };
@@ -44,10 +45,16 @@ export default function DashboardPage() {
               onLog={(goalId, action) => logGoalStreak(goalId, action, true)}
               loadingGoals={loadingGoals}
             />
-            <GoalStreaks 
-              goals={data?.goalStreaks ?? []} 
-              onLog={(goalId, action) => logGoalStreak(goalId, action, false)} 
-              onDelete={deleteGoalStreak} 
+            <DosAndDontsList
+              rules={data?.doDonts ?? []}
+              today={today}
+              onLog={(goalId, action) => logGoalStreak(goalId, action, true)}
+              loadingGoals={loadingGoals}
+            />
+            <GoalStreaks
+              goals={data?.goalStreaks ?? []}
+              onLog={(goalId, action) => logGoalStreak(goalId, action, false)}
+              onDelete={deleteGoalStreak}
               onEdit={editGoalStreak}
               loadingGoals={loadingGoals}
             />

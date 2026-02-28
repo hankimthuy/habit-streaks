@@ -5,7 +5,7 @@ import MaterialIcon from "@/components/icons/MaterialIcon";
 
 interface CreateGoalStreakModalProps {
   open: boolean;
-  mode: "daily" | "free";
+  mode: "daily" | "free" | "do_dont";
   onClose: () => void;
   onCreated: () => void;
 }
@@ -54,18 +54,23 @@ export default function CreateGoalStreakModal({
   // Free mode fields
   const [targetDays, setTargetDays] = useState(7);
 
+  // Do's & Don'ts mode fields
+  const [isEndless, setIsEndless] = useState(true);
+
   if (!open) return null;
 
   const computedTargetDays =
     mode === "daily" && startDate && endDate
       ? Math.max(
-          1,
-          Math.ceil(
-            (new Date(endDate).getTime() - new Date(startDate).getTime()) /
-              (1000 * 60 * 60 * 24)
-          ) + 1
-        )
-      : targetDays;
+        1,
+        Math.ceil(
+          (new Date(endDate).getTime() - new Date(startDate).getTime()) /
+          (1000 * 60 * 60 * 24)
+        ) + 1
+      )
+      : mode === "do_dont"
+        ? (isEndless ? 9999 : (endDate ? Math.max(1, Math.ceil((new Date(endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))) : 1))
+        : targetDays;
 
   const resetForm = () => {
     setTitle("");
@@ -76,6 +81,7 @@ export default function CreateGoalStreakModal({
     setStartDate("");
     setEndDate("");
     setTargetDays(7);
+    setIsEndless(true);
     setError("");
   };
 
@@ -93,6 +99,10 @@ export default function CreateGoalStreakModal({
       setError("End date must be after start date");
       return;
     }
+    if (mode === "do_dont" && !isEndless && !endDate) {
+      setError("End date is required if not endless");
+      return;
+    }
 
     setLoading(true);
     setError("");
@@ -108,8 +118,8 @@ export default function CreateGoalStreakModal({
           color,
           target_days: computedTargetDays,
           reward_title: rewardTitle || null,
-          start_date: mode === "daily" ? startDate : null,
-          end_date: mode === "daily" ? endDate : null,
+          start_date: mode === "daily" ? startDate : (mode === "do_dont" ? new Date().toISOString().split('T')[0] : null),
+          end_date: mode === "daily" ? endDate : (mode === "do_dont" && !isEndless ? endDate : null),
           mode,
         }),
       });
@@ -130,6 +140,8 @@ export default function CreateGoalStreakModal({
   };
 
   const isDaily = mode === "daily";
+  const isFree = mode === "free";
+  const isDoDont = mode === "do_dont";
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center">
@@ -154,17 +166,18 @@ export default function CreateGoalStreakModal({
               <MaterialIcon name="arrow_back" className="text-lg" />
             </button>
             <h2 className="text-xl font-bold text-white">
-              {isDaily ? "Daily Streak" : "Free Check-in"}
+              {isDaily ? "Daily Streak" : isFree ? "Free Check-in" : "Do's & Don'ts"}
             </h2>
           </div>
           <div
-            className={`px-3 py-1 rounded-full text-xs font-bold ${
-              isDaily
+            className={`px-3 py-1 rounded-full text-xs font-bold ${isDaily
                 ? "bg-primary/20 text-primary"
-                : "bg-amber-500/20 text-amber-500"
-            }`}
+                : isFree
+                  ? "bg-amber-500/20 text-amber-500"
+                  : "bg-indigo-500/20 text-indigo-500"
+              }`}
           >
-            {isDaily ? "Daily" : "Free"}
+            {isDaily ? "Daily" : isFree ? "Free" : "Rule"}
           </div>
         </div>
 
@@ -181,7 +194,9 @@ export default function CreateGoalStreakModal({
               placeholder={
                 isDaily
                   ? "e.g. 30-Day Reading Challenge"
-                  : "e.g. Complete 10 Side Projects"
+                  : isFree
+                    ? "e.g. Complete 10 Side Projects"
+                    : "e.g. No Sugar"
               }
               className="w-full bg-slate-800 border border-slate-700 rounded-2xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-primary transition-colors"
             />
@@ -230,6 +245,40 @@ export default function CreateGoalStreakModal({
             </div>
           )}
 
+          {/* Configuration for Do's & Don'ts */}
+          {isDoDont && (
+            <div className="flex flex-col gap-3">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <div className="relative">
+                  <input
+                    type="checkbox"
+                    className="sr-only"
+                    checked={isEndless}
+                    onChange={(e) => setIsEndless(e.target.checked)}
+                  />
+                  <div className={`block w-10 h-6 rounded-full transition-colors ${isEndless ? 'bg-indigo-500' : 'bg-slate-700'}`}></div>
+                  <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${isEndless ? 'translate-x-4' : ''}`}></div>
+                </div>
+                <span className="text-sm font-bold text-white">Lifelong Rule (Endless)</span>
+              </label>
+
+              {!isEndless && (
+                <div>
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">
+                    End Date
+                  </label>
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    min={new Date().toISOString().split('T')[0]}
+                    className="w-full bg-slate-800 border border-slate-700 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500 transition-colors [color-scheme:dark]"
+                  />
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Computed target info for daily / manual target for free */}
           {isDaily && startDate && endDate && endDate >= startDate && (
             <div className="flex items-center gap-2 bg-primary/10 border border-primary/30 rounded-2xl px-4 py-3">
@@ -241,7 +290,7 @@ export default function CreateGoalStreakModal({
             </div>
           )}
 
-          {!isDaily && (
+          {isFree && (
             <div>
               <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">
                 Target Count
@@ -283,11 +332,10 @@ export default function CreateGoalStreakModal({
                   key={c.key}
                   type="button"
                   onClick={() => setColor(c.key)}
-                  className={`w-10 h-10 rounded-xl ${c.className} flex items-center justify-center transition-all ${
-                    color === c.key
+                  className={`w-10 h-10 rounded-xl ${c.className} flex items-center justify-center transition-all ${color === c.key
                       ? "ring-2 ring-white ring-offset-2 ring-offset-surface-dark scale-110"
                       : "opacity-60 hover:opacity-100"
-                  }`}
+                    }`}
                 >
                   {color === c.key && (
                     <MaterialIcon name="check" className="text-white text-lg" />
@@ -308,11 +356,10 @@ export default function CreateGoalStreakModal({
                   key={ic}
                   type="button"
                   onClick={() => setIcon(ic)}
-                  className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
-                    icon === ic
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${icon === ic
                       ? "bg-primary text-white"
                       : "bg-slate-800 text-slate-400 hover:text-white"
-                  }`}
+                    }`}
                 >
                   <MaterialIcon name={ic} className="text-xl" />
                 </button>

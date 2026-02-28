@@ -16,7 +16,7 @@ export interface DashboardGoalStreak {
   reward_title: string | null;
   start_date: string | null;
   end_date: string | null;
-  mode: "daily" | "free";
+  mode: "daily" | "free" | "do_dont";
   last_checkin_date: string | null;
   created_at: string;
 }
@@ -35,6 +35,7 @@ export interface WeekSummary {
 interface DashboardData {
   todayStreaks: DashboardGoalStreak[];
   goalStreaks: DashboardGoalStreak[];
+  doDonts: DashboardGoalStreak[];
   stats: DashboardStats;
 }
 
@@ -84,25 +85,25 @@ export function useDashboard() {
       // For today's grind, prevent multiple clicks on the same goal
       // For goal streaks, allow multiple checkins (catch up for missed days)
       if (isTodayGrind && loadingGoals.has(goalId)) return;
-      
+
       setLoadingGoals(prev => new Set(prev).add(goalId));
-      
+
       try {
         const res = await fetch(`/api/goal-streaks/${goalId}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ action, date: today }),
         });
-        
+
         if (res.ok) {
           await fetchDashboard();
           const goal = data?.todayStreaks.find(g => g.id === goalId) || data?.goalStreaks.find(g => g.id === goalId);
           const goalTitle = goal?.title || "Goal";
-          
+
           setNotification({
             type: 'success',
-            message: action === 'increment' 
-              ? `${goalTitle} checked in successfully!` 
+            message: action === 'increment'
+              ? `${goalTitle} checked in successfully!`
               : `${goalTitle} checked out successfully!`
           });
         } else {
@@ -120,7 +121,7 @@ export function useDashboard() {
           newSet.delete(goalId);
           return newSet;
         });
-        
+
         // Auto-clear notification after 3 seconds
         setTimeout(() => setNotification(null), 3000);
       }

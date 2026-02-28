@@ -5,7 +5,7 @@ import MaterialIcon from "@/components/icons/MaterialIcon";
 interface CreateTypeSelectorProps {
   open: boolean;
   onClose: () => void;
-  onSelect: (mode: "daily" | "free") => void;
+  onSelect: (mode: "daily" | "free" | "do_dont") => void;
 }
 
 export default function CreateTypeSelector({
@@ -69,6 +69,23 @@ export default function CreateTypeSelector({
               <h3 className="font-bold text-white text-base">Free Check-in</h3>
               <p className="text-xs text-slate-400 mt-0.5">
                 No schedule — check in whenever you complete a milestone
+              </p>
+            </div>
+            <MaterialIcon name="chevron_right" className="text-slate-500 text-xl" />
+          </button>
+
+          {/* Do's & Don'ts option */}
+          <button
+            onClick={() => onSelect("do_dont")}
+            className="flex items-center gap-4 p-4 rounded-2xl bg-slate-800 border border-slate-700 hover:border-indigo-500/50 transition-colors text-left group"
+          >
+            <div className="w-12 h-12 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-500 group-hover:scale-110 transition-transform">
+              <MaterialIcon name="rule" className="text-2xl" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-bold text-white text-base">Do's & Don'ts</h3>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Set life rules and track your daily compliance
               </p>
             </div>
             <MaterialIcon name="chevron_right" className="text-slate-500 text-xl" />
