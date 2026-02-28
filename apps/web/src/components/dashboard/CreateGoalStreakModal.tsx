@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MaterialIcon from "@/components/icons/MaterialIcon";
 
 interface CreateGoalStreakModalProps {
@@ -56,6 +56,22 @@ export default function CreateGoalStreakModal({
 
   // Do's & Don'ts mode fields
   const [isEndless, setIsEndless] = useState(true);
+
+  // Reset form whenever the modal opens
+  useEffect(() => {
+    if (open) {
+      setTitle("");
+      setSubtitle("");
+      setIcon("local_fire_department");
+      setColor("primary");
+      setRewardTitle("");
+      setStartDate("");
+      setEndDate("");
+      setTargetDays(7);
+      setIsEndless(true);
+      setError("");
+    }
+  }, [open]);
 
   if (!open) return null;
 
@@ -171,10 +187,10 @@ export default function CreateGoalStreakModal({
           </div>
           <div
             className={`px-3 py-1 rounded-full text-xs font-bold ${isDaily
-                ? "bg-primary/20 text-primary"
-                : isFree
-                  ? "bg-amber-500/20 text-amber-500"
-                  : "bg-indigo-500/20 text-indigo-500"
+              ? "bg-primary/20 text-primary"
+              : isFree
+                ? "bg-amber-500/20 text-amber-500"
+                : "bg-indigo-500/20 text-indigo-500"
               }`}
           >
             {isDaily ? "Daily" : isFree ? "Free" : "Rule"}
@@ -333,8 +349,8 @@ export default function CreateGoalStreakModal({
                   type="button"
                   onClick={() => setColor(c.key)}
                   className={`w-10 h-10 rounded-xl ${c.className} flex items-center justify-center transition-all ${color === c.key
-                      ? "ring-2 ring-white ring-offset-2 ring-offset-surface-dark scale-110"
-                      : "opacity-60 hover:opacity-100"
+                    ? "ring-2 ring-white ring-offset-2 ring-offset-surface-dark scale-110"
+                    : "opacity-60 hover:opacity-100"
                     }`}
                 >
                   {color === c.key && (
@@ -357,8 +373,8 @@ export default function CreateGoalStreakModal({
                   type="button"
                   onClick={() => setIcon(ic)}
                   className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${icon === ic
-                      ? "bg-primary text-white"
-                      : "bg-slate-800 text-slate-400 hover:text-white"
+                    ? "bg-primary text-white"
+                    : "bg-slate-800 text-slate-400 hover:text-white"
                     }`}
                 >
                   <MaterialIcon name={ic} className="text-xl" />

@@ -10,7 +10,11 @@ import { useDashboard } from "@/lib/hooks/use-dashboard";
 
 export default function StatsPage() {
   const { data } = useDashboard();
-  const allStreaks = data?.goalStreaks ?? [];
+  // Combine daily + free streaks for longest streaks view
+  const allStreaks = [
+    ...(data?.todayStreaks ?? []),
+    ...(data?.goalStreaks ?? []),
+  ];
 
   return (
     <>
@@ -29,7 +33,7 @@ export default function StatsPage() {
           <MonthlyCompletion />
         </div>
         <div>
-          <p className="text-slate-400 text-sm mb-4">Compare positive checks against missed items.</p>
+          <p className="text-slate-400 text-sm mb-4">See how well you followed your daily rules today.</p>
           <DoVsDontChart />
         </div>
         <div>

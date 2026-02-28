@@ -59,9 +59,8 @@ function WeekView({ activity }: { activity: ActivityData }) {
           <div key={day.date} className="flex flex-col items-center gap-1">
             <span className="text-[10px] text-slate-500 font-medium">{label}</span>
             <div
-              className={`w-10 h-10 rounded-lg flex flex-col items-center justify-center relative transition-colors ${
-                isPerfect ? "bg-emerald-500/20 border border-emerald-500/40" : getLevelColor(day.level)
-              } ${inStreak ? "ring-1 ring-orange-400/50" : ""}`}
+              className={`w-10 h-10 rounded-lg flex flex-col items-center justify-center relative transition-colors ${isPerfect ? "bg-emerald-500/20 border border-emerald-500/40" : getLevelColor(day.level)
+                } ${inStreak ? "ring-1 ring-orange-400/50" : ""}`}
             >
               {isPerfect ? (
                 <MaterialIcon name="local_fire_department" filled className="text-base text-orange-400" />
@@ -113,11 +112,10 @@ function MonthView({ activity }: { activity: ActivityData }) {
           return (
             <div
               key={day.date}
-              className={`w-8 h-8 rounded-full flex items-center justify-center relative transition-colors ${
-                isPerfect
+              className={`w-8 h-8 rounded-full flex items-center justify-center relative transition-colors ${isPerfect
                   ? "bg-emerald-500/20 border border-emerald-500/40"
                   : getLevelColor(day.level)
-              } ${inStreak ? "ring-1 ring-orange-400/50" : ""}`}
+                } ${inStreak ? "ring-1 ring-orange-400/50" : ""}`}
             >
               {isPerfect ? (
                 <MaterialIcon name="local_fire_department" filled className="text-sm text-orange-400" />
@@ -214,13 +212,12 @@ function YearView({ activity }: { activity: ActivityData }) {
                   return (
                     <div
                       key={`${wi}-${di}`}
-                      className={`w-[10px] h-[10px] rounded-[2px] ${
-                        isPerfect
+                      className={`w-[10px] h-[10px] rounded-[2px] ${isPerfect
                           ? inStreak
                             ? "bg-orange-400"
                             : "bg-emerald-500"
                           : getLevelColor(cell.level)
-                      }`}
+                        }`}
                       title={cell.date}
                     />
                   );
@@ -262,7 +259,7 @@ export default function ActivityHeatmap({ activity, timeframe }: ActivityHeatmap
         </div>
       </div>
       <div className="bg-surface-dark rounded-xl p-4">
-        {!activity ? (
+        {!activity || activity.timeframe.toLowerCase() !== timeframe.toLowerCase() ? (
           <div className="flex items-center justify-center py-8">
             <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
           </div>

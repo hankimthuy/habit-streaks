@@ -12,7 +12,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { href: "/", icon: "home", label: "Home" },
-  { href: "/stats", icon: "bar_chart", label: "Stats" },
+  { href: "/insights", icon: "insights", label: "Insights" },
   { href: "/achievements", icon: "emoji_events", label: "Achievements" },
   { href: "/profile", icon: "person", label: "Profile" },
 ];
@@ -29,11 +29,10 @@ export default function BottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center gap-1 group ${
-                isActive
-                  ? "text-primary"
-                  : "text-slate-500 hover:text-slate-300 transition-colors"
-              }`}
+              className={`flex flex-col items-center gap-1 group ${isActive
+                ? "text-primary"
+                : "text-slate-500 hover:text-slate-300 transition-colors"
+                }`}
             >
               <MaterialIcon
                 name={item.icon}

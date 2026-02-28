@@ -39,9 +39,18 @@ export default function LongestStreaks({ goalStreaks = [] }: LongestStreaksProps
       <div className="flex flex-col gap-3">
         {sortedStreaks.map((streak) => {
           const isActive = streak.current_streak > 0;
-          // Simple visual dots for now (mocking 7 days, 1 success if active, else empty)
-          const dots = Array(7).fill("empty");
-          if (isActive) dots[6] = "success";
+          // Build 7-dot history: green = current streak days, red = most recent missed day, grey = no data
+          const DOT_COUNT = 7;
+          const dots = Array(DOT_COUNT).fill("empty");
+          const streakDays = Math.min(streak.current_streak, DOT_COUNT);
+          // Fill green dots from the right for current streak days
+          for (let i = 0; i < streakDays; i++) {
+            dots[DOT_COUNT - 1 - i] = "success";
+          }
+          // If streak is broken but habit has a history, mark the day just before the green dots as red
+          if (streak.current_streak === 0 && streak.longest_streak > 0) {
+            dots[DOT_COUNT - 1] = "fail";
+          }
 
           return (
             <div
