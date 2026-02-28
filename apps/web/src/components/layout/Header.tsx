@@ -19,12 +19,8 @@ export default function Header({
       <div className="flex items-center gap-3">
         <div className="relative">
           <div className="absolute inset-0 bg-primary blur-lg opacity-40 rounded-full" />
-          <div className="relative w-12 h-12 rounded-full flex items-center justify-center shadow-lg overflow-hidden bg-transparent">
-            <img
-              alt="Habit Streaks Logo"
-              className="w-full h-full object-cover"
-              src="/logo.jpg"
-            />
+          <div className="relative w-12 h-12 rounded-full flex items-center justify-center shadow-lg overflow-hidden bg-gradient-to-br from-primary to-orange-600 text-white">
+            <MaterialIcon name="local_fire_department" className="text-3xl" filled />
           </div>
         </div>
         <div>
