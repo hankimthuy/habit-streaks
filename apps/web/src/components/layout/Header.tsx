@@ -19,11 +19,11 @@ export default function Header({
       <div className="flex items-center gap-3">
         <div className="relative">
           <div className="absolute inset-0 bg-primary blur-lg opacity-40 rounded-full" />
-          <div className="relative bg-gradient-to-br from-primary to-orange-600 w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg transform rotate-3 overflow-hidden">
+          <div className="relative w-12 h-12 rounded-full flex items-center justify-center shadow-lg overflow-hidden bg-transparent">
             <img
               alt="Habit Streaks Logo"
-              className="w-10 h-10 object-contain brightness-0 invert"
-              src="/favicon.ico"
+              className="w-full h-full object-cover"
+              src="/logo.jpg"
             />
           </div>
         </div>
