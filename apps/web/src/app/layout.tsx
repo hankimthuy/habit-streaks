@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Habit Streaks",
+  title: "FlowStreaks",
   description: "Track your habits, build streaks, earn rewards.",
   manifest: "/manifest.json",
   icons: {
@@ -27,7 +27,7 @@ export default function RootLayout({
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Habit Streaks" />
+        <meta name="apple-mobile-web-app-title" content="FlowStreaks" />
         <link rel="apple-touch-icon" href="/logo.jpg" />
         <link
           href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap"

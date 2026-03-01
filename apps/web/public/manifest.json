@@ -1,6 +1,6 @@
 {
-  "name": "Habit Streaks",
-  "short_name": "HabitStreaks",
+  "name": "FlowStreaks",
+  "short_name": "FlowStreaks",
   "description": "Track your habits, build streaks, earn rewards.",
   "start_url": "/",
   "display": "standalone",

@@ -25,7 +25,7 @@ export default function Header({
         </div>
         <div>
           <h1 className="text-xl font-bold leading-tight">
-            Habit<span className="text-primary">Streaks</span>
+            Flow<span className="text-primary">Streaks</span>
           </h1>
           <div className="flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400 font-medium">
             <span className="w-2 h-2 rounded-full bg-accent-green animate-pulse" />
