@@ -11,9 +11,10 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { href: "/", icon: "home", label: "Home" },
-  { href: "/insights", icon: "insights", label: "Insights" },
+  { href: "/", icon: "task_alt", label: "Habit" },
+  { href: "/lifeflow", icon: "waves", label: "LifeFlow" },
   { href: "/achievements", icon: "emoji_events", label: "Achievements" },
+  { href: "/insights", icon: "insights", label: "Insights" },
   { href: "/profile", icon: "person", label: "Profile" },
 ];
 
