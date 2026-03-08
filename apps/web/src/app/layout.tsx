@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { getLocale, getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
+import { ThemeProvider } from "@/components/layout/ThemeContext";
 import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -50,11 +51,13 @@ export default async function RootLayout({
         />
       </head>
       <body className="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased overflow-x-hidden">
-        <NextIntlClientProvider messages={messages}>
-          <div className="relative min-h-screen flex flex-col max-w-md mx-auto bg-background-light dark:bg-background-dark shadow-2xl border-x border-slate-200 dark:border-slate-800">
-            {children}
-          </div>
-        </NextIntlClientProvider>
+        <ThemeProvider>
+          <NextIntlClientProvider messages={messages}>
+            <div className="relative min-h-screen flex flex-col max-w-md mx-auto bg-background-light dark:bg-background-dark shadow-2xl border-x border-slate-200 dark:border-slate-800">
+              {children}
+            </div>
+          </NextIntlClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

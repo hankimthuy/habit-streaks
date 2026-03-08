@@ -131,7 +131,15 @@
             "notifications": "Cài đặt thông báo",
             "appTheme": "Giao diện",
             "signOut": "Đăng xuất",
-            "themeDark": "Tối"
+            "themeDark": "Tối",
+            "themeLight": "Sáng"
+        },
+        "edit": {
+            "title": "Sửa hồ sơ",
+            "name": "Họ và tên",
+            "username": "Tên người dùng",
+            "save": "Lưu thay đổi",
+            "cancel": "Hủy"
         }
     },
     "CreateModals": {
