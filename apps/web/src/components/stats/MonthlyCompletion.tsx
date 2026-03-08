@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { vnToday } from "@/lib/date-utils";
+import { useTranslations } from "next-intl";
 
 interface PeriodStats {
   total: number;
@@ -20,6 +21,7 @@ interface StatsData {
 type Timeframe = "Day" | "Week" | "Month" | "Year";
 
 export default function MonthlyCompletion() {
+  const t = useTranslations("Insights.completion");
   const [timeframe, setTimeframe] = useState<Timeframe>("Month");
   const [statsData, setStatsData] = useState<StatsData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -55,14 +57,14 @@ export default function MonthlyCompletion() {
 
   // Keep the label context-appropriate
   const label = percentage === 100
-    ? "Perfect!"
+    ? t("perfect")
     : percentage >= 80
-      ? "Great job!"
+      ? t("greatJob")
       : percentage >= 50
-        ? "Keep going!"
+        ? t("keepGoing")
         : percentage > 0
-          ? "Room to grow"
-          : "Nothing tracked";
+          ? t("roomToGrow")
+          : t("nothingTracked");
 
   return (
     <section className="bg-surface-dark p-6 rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.5)] flex flex-col items-center">
@@ -81,7 +83,7 @@ export default function MonthlyCompletion() {
       </div>
 
       <h2 className="text-slate-400 text-sm font-bold uppercase tracking-widest mb-2">
-        {timeframe} Completion
+        {t("title", { timeframe })}
       </h2>
 
       {loading ? (
@@ -113,19 +115,19 @@ export default function MonthlyCompletion() {
 
           <div className="mt-4 flex gap-6">
             <div className="text-center">
-              <p className="text-xs text-slate-500 font-medium">Completed</p>
+              <p className="text-xs text-slate-500 font-medium">{t("completed")}</p>
               <p className="text-lg font-bold">{completed}</p>
             </div>
             <div className="w-px h-8 bg-slate-800 self-center" />
             <div className="text-center">
-              <p className="text-xs text-slate-500 font-medium">Missed</p>
+              <p className="text-xs text-slate-500 font-medium">{t("missed")}</p>
               <p className="text-lg font-bold">{failed}</p>
             </div>
           </div>
 
           {current?.total === 0 && (
             <p className="text-xs text-slate-600 mt-3 text-center">
-              No habits tracked in this {timeframe.toLowerCase()}
+              {t("noHabitsTracked", { timeframe: timeframe.toLowerCase() })}
             </p>
           )}
         </>

@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import MaterialIcon from "@/components/icons/MaterialIcon";
 import { vnToday } from "@/lib/date-utils";
+import { useTranslations } from "next-intl";
 
 interface DoDontRule {
   id: string;
@@ -24,6 +25,7 @@ const COLOR_MAP: Record<string, { iconBg: string; dot: string }> = {
 };
 
 export default function DoDontTracker() {
+  const t = useTranslations("Insights.doDont");
   const [rules, setRules] = useState<DoDontRule[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingIds, setLoadingIds] = useState<Set<string>>(new Set());
@@ -73,10 +75,10 @@ export default function DoDontTracker() {
     return (
       <section className="bg-surface-dark p-6 rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
         <h2 className="text-slate-400 text-sm font-bold uppercase tracking-widest mb-4">
-          Do&apos;s &amp; Don&apos;ts Tracker
+          {t("title")}
         </h2>
         <p className="text-slate-600 text-sm text-center py-4">
-          No rules yet. Add one from the home screen.
+          {t("noRules")}
         </p>
       </section>
     );
@@ -89,9 +91,9 @@ export default function DoDontTracker() {
     <section className="bg-surface-dark p-6 rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-slate-400 text-sm font-bold uppercase tracking-widest">
-          Do&apos;s &amp; Don&apos;ts Tracker
+          {t("title")}
         </h2>
-        <span className="text-xs font-bold text-slate-500">Today</span>
+        <span className="text-xs font-bold text-slate-500">{t("today")}</span>
       </div>
 
       {/* Scoreboard */}
@@ -99,14 +101,14 @@ export default function DoDontTracker() {
         <div className="flex-1 bg-accent-green/10 border border-accent-green/20 rounded-2xl px-4 py-2 flex items-center gap-2">
           <MaterialIcon name="check_circle" className="text-accent-green text-base" />
           <div>
-            <p className="text-xs text-slate-500 font-medium">Followed</p>
+            <p className="text-xs text-slate-500 font-medium">{t("followed")}</p>
             <p className="text-lg font-black text-accent-green">{followed}</p>
           </div>
         </div>
         <div className="flex-1 bg-accent-red/10 border border-accent-red/20 rounded-2xl px-4 py-2 flex items-center gap-2">
           <MaterialIcon name="cancel" className="text-accent-red text-base" />
           <div>
-            <p className="text-xs text-slate-500 font-medium">Broken</p>
+            <p className="text-xs text-slate-500 font-medium">{t("broken")}</p>
             <p className="text-lg font-black text-accent-red">{broken}</p>
           </div>
         </div>
@@ -123,8 +125,8 @@ export default function DoDontTracker() {
             <div
               key={rule.id}
               className={`flex items-center gap-3 p-3 rounded-2xl border transition-all ${checkedToday
-                  ? "bg-accent-green/5 border-accent-green/20"
-                  : "bg-slate-800/60 border-slate-700/50"
+                ? "bg-accent-green/5 border-accent-green/20"
+                : "bg-slate-800/60 border-slate-700/50"
                 }`}
             >
               {/* Icon */}
@@ -144,7 +146,7 @@ export default function DoDontTracker() {
                 </h4>
                 <p className="text-xs text-slate-500 flex items-center gap-1">
                   <MaterialIcon name="local_fire_department" className="text-xs text-primary" />
-                  {rule.current_streak} day streak
+                  {t("streak", { days: rule.current_streak })}
                 </p>
               </div>
 
@@ -153,10 +155,10 @@ export default function DoDontTracker() {
                 onClick={() => handleToggle(rule.id, checkedToday)}
                 disabled={isLoading}
                 className={`w-8 h-8 rounded-full flex items-center justify-center transition-all flex-shrink-0 ${isLoading
-                    ? "bg-slate-700 cursor-not-allowed"
-                    : checkedToday
-                      ? "bg-accent-green text-white shadow-lg shadow-accent-green/30 hover:bg-accent-green/80"
-                      : "bg-slate-700 border border-slate-600 text-slate-400 hover:border-accent-green hover:text-accent-green"
+                  ? "bg-slate-700 cursor-not-allowed"
+                  : checkedToday
+                    ? "bg-accent-green text-white shadow-lg shadow-accent-green/30 hover:bg-accent-green/80"
+                    : "bg-slate-700 border border-slate-600 text-slate-400 hover:border-accent-green hover:text-accent-green"
                   }`}
               >
                 {isLoading ? (

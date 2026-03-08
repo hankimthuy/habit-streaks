@@ -1,6 +1,7 @@
 "use client";
 
 import MaterialIcon from "@/components/icons/MaterialIcon";
+import { useTranslations } from "next-intl";
 
 interface CreateTypeSelectorProps {
   open: boolean;
@@ -13,6 +14,8 @@ export default function CreateTypeSelector({
   onClose,
   onSelect,
 }: CreateTypeSelectorProps) {
+  const t = useTranslations("CreateModals.selector");
+
   if (!open) return null;
 
   return (
@@ -30,7 +33,7 @@ export default function CreateTypeSelector({
 
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-white">Create New Streak</h2>
+          <h2 className="text-xl font-bold text-white">{t("title")}</h2>
           <button
             onClick={onClose}
             className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white transition-colors"
@@ -49,9 +52,9 @@ export default function CreateTypeSelector({
               <MaterialIcon name="calendar_month" className="text-2xl" />
             </div>
             <div className="flex-1">
-              <h3 className="font-bold text-white text-base">Daily Streak</h3>
+              <h3 className="font-bold text-white text-base">{t("dailyStreak.title")}</h3>
               <p className="text-xs text-slate-400 mt-0.5">
-                Set a date range and check in daily to build your streak
+                {t("dailyStreak.desc")}
               </p>
             </div>
             <MaterialIcon name="chevron_right" className="text-slate-500 text-xl" />
@@ -66,9 +69,9 @@ export default function CreateTypeSelector({
               <MaterialIcon name="bolt" className="text-2xl" />
             </div>
             <div className="flex-1">
-              <h3 className="font-bold text-white text-base">Free Check-in</h3>
+              <h3 className="font-bold text-white text-base">{t("freeCheckin.title")}</h3>
               <p className="text-xs text-slate-400 mt-0.5">
-                No schedule — check in whenever you complete a milestone
+                {t("freeCheckin.desc")}
               </p>
             </div>
             <MaterialIcon name="chevron_right" className="text-slate-500 text-xl" />
@@ -83,9 +86,9 @@ export default function CreateTypeSelector({
               <MaterialIcon name="rule" className="text-2xl" />
             </div>
             <div className="flex-1">
-              <h3 className="font-bold text-white text-base">Do's & Don'ts</h3>
+              <h3 className="font-bold text-white text-base">{t("doDont.title")}</h3>
               <p className="text-xs text-slate-400 mt-0.5">
-                Set life rules and track your daily compliance
+                {t("doDont.desc")}
               </p>
             </div>
             <MaterialIcon name="chevron_right" className="text-slate-500 text-xl" />

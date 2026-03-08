@@ -1,6 +1,7 @@
 "use client";
 
 import MaterialIcon from "@/components/icons/MaterialIcon";
+import { useTranslations } from "next-intl";
 import type { DashboardGoalStreak } from "@/lib/hooks/use-dashboard";
 
 interface TodayStreaksProps {
@@ -33,6 +34,7 @@ function TodayStreakCard({
   const isPerfect = streak.current_streak >= streak.target_days;
   const colors = COLOR_MAP[streak.color] ?? COLOR_MAP.primary;
   const isLoading = loadingGoals?.has(streak.id);
+  const t = useTranslations("Dashboard.labels");
 
   return (
     <>
@@ -46,16 +48,15 @@ function TodayStreakCard({
         </div>
         <div className="flex-1 min-w-0">
           <h4
-            className={`font-bold ${
-              checkedToday
+            className={`font-bold ${checkedToday
                 ? "text-accent-green line-through decoration-accent-green/50"
                 : "text-white"
-            }`}
+              }`}
           >
             {streak.title}
           </h4>
           <p className={`text-xs ${checkedToday ? "text-slate-500" : "text-slate-400"}`}>
-            {streak.subtitle || `${streak.current_streak}/${streak.target_days} days`}
+            {streak.subtitle || `${streak.current_streak}/${streak.target_days} ${t("days")}`}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -75,27 +76,26 @@ function TodayStreakCard({
               <button
                 onClick={(e) => { e.stopPropagation(); onLog(streak.id, "increment"); }}
                 disabled={checkedToday || isPerfect || isLoading}
-                className={`h-8 px-4 rounded-full font-bold text-xs flex items-center gap-1 transition-all ${
-                  checkedToday
+                className={`h-8 px-4 rounded-full font-bold text-xs flex items-center gap-1 transition-all ${checkedToday
                     ? "bg-accent-green/20 text-accent-green cursor-default"
                     : isPerfect
                       ? "bg-accent-green/20 text-accent-green cursor-default"
                       : isLoading
                         ? "bg-slate-700 text-slate-400 cursor-not-allowed"
                         : `${colors.bar} text-white hover:opacity-90 shadow-lg`
-                }`}
+                  }`}
               >
                 {isLoading ? (
                   <>
                     <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                    Loading...
+                    {t("loading")}
                   </>
                 ) : checkedToday ? (
-                  <><MaterialIcon name="check" className="text-sm" /> Done</>
+                  <><MaterialIcon name="check" className="text-sm" /> {t("done")}</>
                 ) : isPerfect ? (
-                  <><MaterialIcon name="check" className="text-sm" /> Done!</>
+                  <><MaterialIcon name="check" className="text-sm" /> {t("doneExclamation")}</>
                 ) : (
-                  <><MaterialIcon name="add" className="text-sm" /> Check In</>
+                  <><MaterialIcon name="add" className="text-sm" /> {t("checkIn")}</>
                 )}
               </button>
             </>
@@ -107,6 +107,7 @@ function TodayStreakCard({
 }
 
 export default function TodayStreaks({ streaks, today, onLog, loadingGoals }: TodayStreaksProps) {
+  const t = useTranslations("Dashboard.stats");
   const completedCount = streaks.filter((s) => s.current_streak >= s.target_days).length;
 
   if (streaks.length === 0) return null;
@@ -115,14 +116,14 @@ export default function TodayStreaks({ streaks, today, onLog, loadingGoals }: To
     <section>
       <div className="flex items-center justify-between mb-4 px-1">
         <h2 className="text-xl font-bold flex items-center gap-2">
-          Today&apos;s Grind
+          {t("todayStreaks")}
           <span className="flex h-2 w-2 relative">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
           </span>
         </h2>
         <span className="text-xs font-bold bg-slate-800 px-3 py-1 rounded-full text-slate-300">
-          {completedCount}/{streaks.length} Done
+          {t("doneCount", { completed: completedCount, total: streaks.length })}
         </span>
       </div>
       <div className="flex flex-col gap-3">

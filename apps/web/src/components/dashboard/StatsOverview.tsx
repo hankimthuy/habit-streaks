@@ -1,6 +1,7 @@
 "use client";
 
 import MaterialIcon from "@/components/icons/MaterialIcon";
+import { useTranslations } from "next-intl";
 
 interface StatCardProps {
   label: string;
@@ -37,18 +38,20 @@ export default function StatsOverview({
   currentStreak = 12,
   completionRate = 84,
 }: StatsOverviewProps) {
+  const t = useTranslations("Dashboard.labels");
+
   return (
     <div className="grid grid-cols-2 gap-3">
       <StatCard
-        label="Current Streak"
+        label={t("currentStreak")}
         value={currentStreak}
-        unit="days"
+        unit={t("days")}
         icon="local_fire_department"
         iconColor="text-primary"
         unitColor="text-primary"
       />
       <StatCard
-        label="Completion"
+        label={t("completion")}
         value={completionRate}
         unit="%"
         icon="check_circle"

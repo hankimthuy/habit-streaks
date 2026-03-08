@@ -1,0 +1,198 @@
+{
+    "Common": {
+        "loading": "Loading...",
+        "save": "Save",
+        "cancel": "Cancel",
+        "error": "An error occurred."
+    },
+    "Dashboard": {
+        "title": "FlowStreaks",
+        "description": "The energy-aware Life OS. Manage your capacity, lead flexible discipline, and earn rewards.",
+        "level": "Level {level} 🔥",
+        "stats": {
+            "todayStreaks": "Today's Grind",
+            "dosAndDonts": "Do's & Don'ts",
+            "goalStreaks": "Goal Streaks",
+            "doneCount": "{completed}/{total} Done",
+            "followedCount": "{completed}/{total} Followed",
+            "viewAll": "View All"
+        },
+        "labels": {
+            "days": "days",
+            "lifeRule": "Life Rule / Atomic Habit",
+            "perfect": "Perfect",
+            "onTrack": "On Track",
+            "keepGoing": "Keep Going",
+            "checkIn": "Check In",
+            "done": "Done",
+            "doneExclamation": "Done!",
+            "loading": "Loading...",
+            "currentStreak": "Current Streak",
+            "completion": "Completion"
+        }
+    },
+    "LifeFlow": {
+        "todaysLog": "Today's Log",
+        "days": "{count} Days",
+        "dailyGoals": "Daily Goals",
+        "percentDone": "{percent}% Done",
+        "completionTitle": "In the Zone!",
+        "completionDesc": "You've successfully completed all your planned habits for today."
+    },
+    "Achievements": {
+        "title": "Achievements",
+        "streak": {
+            "dayStreak": "Day Streak!"
+        },
+        "timeframe": {
+            "week": "Week",
+            "month": "Month",
+            "year": "Year"
+        },
+        "activity": {
+            "title": "Activity",
+            "stats": "{coverage}% coverage · {activeDays}/{totalDays} days · {perfectDays} perfect",
+            "streakLabel": "streak"
+        },
+        "badges": {
+            "title": "Badges",
+            "unlocked": "{unlocked}/{total} unlocked"
+        },
+        "rewards": {
+            "title": "Rewards",
+            "unlocked": "{unlocked}/{total} unlocked",
+            "new": "New",
+            "used": "Used",
+            "redeem": "Redeem",
+            "until": "Until {date}"
+        },
+        "xp": {
+            "level": "Level {level}",
+            "xp": "{current} / {target} XP",
+            "toNextLevel": "{remaining} XP to Level {nextLevel}",
+            "streakDays": "{days}d streak",
+            "keepStreak": "Keep your streak for",
+            "moreDays": "{days} more days",
+            "toUnlock": "to unlock!",
+            "progress": "{remaining}/{target} days"
+        }
+    },
+    "Insights": {
+        "title": "Insights",
+        "page": {
+            "desc1": "Track your consistency over time with completion rates.",
+            "desc2": "See how well you followed your daily rules today.",
+            "desc3": "Your current vs longest recorded streaks.",
+            "desc4": "AI-driven actionable advice based on your consistency.",
+            "aiComingSoon": "AI Insights Coming Soon",
+            "aiDesc": "We'll analyze your daily load and completion rates to help prevent burnout and optimize your habits."
+        },
+        "doDont": {
+            "title": "Do's & Don'ts Tracker",
+            "today": "Today",
+            "noRules": "No rules yet. Add one from the home screen.",
+            "followed": "Followed",
+            "broken": "Broken",
+            "streak": "{days} day streak"
+        },
+        "longestStreaks": {
+            "title": "Longest Streaks",
+            "noStreaks": "No streaks recorded yet.",
+            "bestDays": "Best Days"
+        },
+        "completion": {
+            "title": "{timeframe} Completion",
+            "perfect": "Perfect!",
+            "greatJob": "Great job!",
+            "keepGoing": "Keep going!",
+            "roomToGrow": "Room to grow",
+            "nothingTracked": "Nothing tracked",
+            "completed": "Completed",
+            "missed": "Missed",
+            "noHabitsTracked": "No habits tracked in this {timeframe}"
+        }
+    },
+    "Profile": {
+        "header": {
+            "level": "Level {level}"
+        },
+        "stats": {
+            "totalStreaks": "Total Streaks",
+            "giftsEarned": "Gifts Earned"
+        },
+        "fireCollection": {
+            "title": "Your Fire Collection",
+            "unlocked": "{count} Unlocked",
+            "lockedText": "LOCKED"
+        },
+        "settings": {
+            "title": "Settings",
+            "editProfile": "Edit Profile",
+            "notifications": "Notification Settings",
+            "appTheme": "App Theme",
+            "signOut": "Sign Out",
+            "themeDark": "Dark"
+        }
+    },
+    "CreateModals": {
+        "selector": {
+            "title": "Create New Streak",
+            "dailyStreak": {
+                "title": "Daily Streak",
+                "desc": "Set a date range and check in daily to build your streak"
+            },
+            "freeCheckin": {
+                "title": "Free Check-in",
+                "desc": "No schedule — check in whenever you complete a milestone"
+            },
+            "doDont": {
+                "title": "Do's & Don'ts",
+                "desc": "Set life rules and track your daily compliance"
+            }
+        },
+        "habit": {
+            "title": "Create New Habit",
+            "doThis": "Do This",
+            "avoidThis": "Avoid This",
+            "habitName": "Habit Name",
+            "habitPlaceholder": "e.g. Drink 2L Water",
+            "desc": "Description (optional)",
+            "descPlaceholder": "e.g. Hydration goal",
+            "category": "Category (optional)",
+            "categoryPlaceholder": "e.g. Health, Learning",
+            "icon": "Icon",
+            "errorNameReq": "Habit name is required",
+            "createBtn": "Create Habit",
+            "creatingBtn": "Creating..."
+        },
+        "streak": {
+            "dailyTitle": "Daily Streak",
+            "freeTitle": "Free Check-in",
+            "ruleTitle": "Do's & Don'ts",
+            "labelDaily": "Daily",
+            "labelFree": "Free",
+            "labelRule": "Rule",
+            "streakName": "Streak Name",
+            "placeholderDaily": "e.g. 30-Day Reading Challenge",
+            "placeholderFree": "e.g. Complete 10 Side Projects",
+            "placeholderRule": "e.g. No Sugar",
+            "desc": "Description (optional)",
+            "descPlaceholder": "e.g. Read at least 30 minutes",
+            "startDate": "Start Date",
+            "endDate": "End Date",
+            "lifelong": "Lifelong Rule (Endless)",
+            "toComplete": "to complete",
+            "targetCount": "Target Count",
+            "reward": "Reward (optional)",
+            "rewardPlaceholder": "e.g. Buy a new book",
+            "color": "Color",
+            "icon": "Icon",
+            "errorNameReq": "Name is required",
+            "errorDatesReq": "Start date and end date are required",
+            "errorDateOrder": "End date must be after start date",
+            "errorEndDateReq": "End date is required if not endless",
+            "createBtn": "Create Streak",
+            "creatingBtn": "Creating..."
+        }
+    }
+}

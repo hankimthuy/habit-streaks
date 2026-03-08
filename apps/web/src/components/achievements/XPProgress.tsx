@@ -3,6 +3,7 @@
 import MaterialIcon from "@/components/icons/MaterialIcon";
 import type { ProfileData } from "@/lib/hooks/use-achievements";
 import { getLevelProgress, getNextMysteryBox } from "@/lib/constants/leveling";
+import { useTranslations } from "next-intl";
 
 interface XPProgressProps {
   profile: ProfileData | null;
@@ -10,6 +11,8 @@ interface XPProgressProps {
 }
 
 export default function XPProgress({ profile, currentStreak }: XPProgressProps) {
+  const t = useTranslations("Achievements.xp");
+
   if (!profile) return null;
 
   const { current, target, percentage } = getLevelProgress(profile.xp);
@@ -30,7 +33,7 @@ export default function XPProgress({ profile, currentStreak }: XPProgressProps) 
           </div>
           <div className="flex-1">
             <div className="flex items-baseline justify-between">
-              <h3 className="text-base font-bold text-white">Level {profile.level}</h3>
+              <h3 className="text-base font-bold text-white">{t("level", { level: profile.level })}</h3>
               <div className="text-right">
                 <span className="text-primary font-bold text-sm">{current}</span>
                 <span className="text-slate-500 text-xs">/ {target} XP</span>
@@ -45,7 +48,7 @@ export default function XPProgress({ profile, currentStreak }: XPProgressProps) 
               </div>
             </div>
             <p className="text-[10px] text-slate-500 mt-1">
-              {target - current} XP to Level {profile.level + 1}
+              {t("toNextLevel", { remaining: target - current, nextLevel: profile.level + 1 })}
             </p>
           </div>
         </div>
@@ -70,13 +73,13 @@ export default function XPProgress({ profile, currentStreak }: XPProgressProps) 
                     {nextBox.tier.name}
                   </h3>
                   <span className="px-1.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-[8px] font-bold uppercase">
-                    {nextBox.tier.streakDays}d streak
+                    {t("streakDays", { days: nextBox.tier.streakDays })}
                   </span>
                 </div>
                 <p className="text-[10px] text-slate-400 leading-relaxed mb-2">
-                  Keep your streak for{" "}
-                  <span className="text-white font-bold">{nextBox.daysRemaining} more days</span>{" "}
-                  to unlock!
+                  {t("keepStreak")}{" "}
+                  <span className="text-white font-bold">{t("moreDays", { days: nextBox.daysRemaining })}</span>{" "}
+                  {t("toUnlock")}
                 </p>
                 <div className="flex flex-wrap gap-1">
                   {nextBox.tier.rewards.map((reward) => (
@@ -101,7 +104,7 @@ export default function XPProgress({ profile, currentStreak }: XPProgressProps) 
                       Math.round(
                         ((nextBox.tier.streakDays - nextBox.daysRemaining) /
                           nextBox.tier.streakDays) *
-                          100
+                        100
                       ),
                       2
                     )}%`,
@@ -110,13 +113,13 @@ export default function XPProgress({ profile, currentStreak }: XPProgressProps) 
               </div>
               <div className="flex justify-between mt-1">
                 <span className="text-[9px] text-slate-500">
-                  {nextBox.tier.streakDays - nextBox.daysRemaining}/{nextBox.tier.streakDays} days
+                  {t("progress", { remaining: nextBox.tier.streakDays - nextBox.daysRemaining, target: nextBox.tier.streakDays })}
                 </span>
                 <span className="text-[9px] text-purple-400 font-semibold">
                   {Math.round(
                     ((nextBox.tier.streakDays - nextBox.daysRemaining) /
                       nextBox.tier.streakDays) *
-                      100
+                    100
                   )}%
                 </span>
               </div>

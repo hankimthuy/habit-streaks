@@ -1,12 +1,15 @@
 "use client";
 
 import MaterialIcon from "@/components/icons/MaterialIcon";
+import { useTranslations } from "next-intl";
 
 interface StreakCounterProps {
   streak?: number;
 }
 
 export default function StreakCounter({ streak = 12 }: StreakCounterProps) {
+  const t = useTranslations("Achievements.streak");
+
   return (
     <div className="flex flex-col items-center justify-center pt-2 pb-4">
       <div className="relative">
@@ -23,7 +26,7 @@ export default function StreakCounter({ streak = 12 }: StreakCounterProps) {
         </div>
       </div>
       <p className="text-primary font-bold tracking-wide uppercase text-sm mt-1">
-        Day Streak!
+        {t("dayStreak")}
       </p>
     </div>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import MaterialIcon from "@/components/icons/MaterialIcon";
+import { useTranslations } from "next-intl";
 
 export interface FireItem {
   id: string;
@@ -26,24 +27,24 @@ export default function FireCollection({
   items = defaultItems,
   unlockedCount = 6,
 }: FireCollectionProps) {
+  const t = useTranslations("Profile.fireCollection");
+
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold">Your Fire Collection</h2>
-        <span className="text-xs font-bold text-primary">{unlockedCount} Unlocked</span>
+        <h2 className="text-lg font-bold">{t("title")}</h2>
+        <span className="text-xs font-bold text-primary">{t("unlocked", { count: unlockedCount })}</span>
       </div>
       <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-2">
         {items.map((item) => (
           <div
             key={item.id}
-            className={`flex-shrink-0 w-20 h-24 bg-surface-dark rounded-2xl flex flex-col items-center justify-center gap-2 border ${item.borderColor} ${
-              !item.unlocked ? "bg-surface-dark/50" : ""
-            }`}
+            className={`flex-shrink-0 w-20 h-24 bg-surface-dark rounded-2xl flex flex-col items-center justify-center gap-2 border ${item.borderColor} ${!item.unlocked ? "bg-surface-dark/50" : ""
+              }`}
           >
             <div
-              className={`w-12 h-12 ${item.color} rounded-xl flex items-center justify-center ${
-                !item.unlocked ? "opacity-40" : ""
-              }`}
+              className={`w-12 h-12 ${item.color} rounded-xl flex items-center justify-center ${!item.unlocked ? "opacity-40" : ""
+                }`}
             >
               <MaterialIcon
                 name={item.unlocked ? "local_fire_department" : "lock"}
@@ -51,15 +52,14 @@ export default function FireCollection({
               />
             </div>
             <span
-              className={`text-[10px] font-black ${
-                item.id === "classic"
+              className={`text-[10px] font-black ${item.id === "classic"
                   ? "text-primary"
                   : item.unlocked
-                  ? "text-slate-400"
-                  : "text-slate-600"
-              }`}
+                    ? "text-slate-400"
+                    : "text-slate-600"
+                }`}
             >
-              {item.name}
+              {item.id === "locked1" ? t("lockedText") : item.name}
             </span>
           </div>
         ))}

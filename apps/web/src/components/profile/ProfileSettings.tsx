@@ -1,6 +1,7 @@
 "use client";
 
 import MaterialIcon from "@/components/icons/MaterialIcon";
+import { useTranslations } from "next-intl";
 
 interface SettingsItem {
   icon: string;
@@ -16,26 +17,28 @@ interface ProfileSettingsProps {
 }
 
 export default function ProfileSettings({ onSignOut }: ProfileSettingsProps) {
+  const t = useTranslations("Profile.settings");
+
   const items: SettingsItem[] = [
     {
       icon: "person",
-      label: "Edit Profile",
+      label: t("editProfile"),
       iconBg: "bg-accent-blue",
     },
     {
       icon: "notifications",
-      label: "Notification Settings",
+      label: t("notifications"),
       iconBg: "bg-accent-blue",
     },
     {
       icon: "palette",
-      label: "App Theme",
+      label: t("appTheme"),
       iconBg: "bg-accent-blue",
-      rightText: "Dark",
+      rightText: t("themeDark"),
     },
     {
       icon: "logout",
-      label: "Sign Out",
+      label: t("signOut"),
       iconBg: "bg-accent-red",
       labelColor: "text-accent-red",
       onClick: onSignOut,
@@ -44,7 +47,7 @@ export default function ProfileSettings({ onSignOut }: ProfileSettingsProps) {
 
   return (
     <section className="flex flex-col gap-2">
-      <h2 className="text-lg font-bold mb-2">Settings</h2>
+      <h2 className="text-lg font-bold mb-2">{t("title")}</h2>
       <div className="bg-surface-dark rounded-3xl overflow-hidden divide-y divide-slate-800">
         {items.map((item) => (
           <button
@@ -62,7 +65,7 @@ export default function ProfileSettings({ onSignOut }: ProfileSettingsProps) {
                 {item.label}
               </span>
             </div>
-            {item.label !== "Sign Out" && (
+            {item.label !== t("signOut") && (
               <div className="flex items-center gap-2">
                 {item.rightText && (
                   <span className="text-xs font-bold text-slate-500 uppercase">

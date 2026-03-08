@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 interface ProfileHeaderProps {
   avatarUrl?: string;
   displayName?: string;
@@ -13,6 +15,8 @@ export default function ProfileHeader({
   username = "@habit_striker",
   level = 12,
 }: ProfileHeaderProps) {
+  const t = useTranslations("Profile.header");
+
   return (
     <section className="pt-12 pb-8 flex flex-col items-center gap-4 relative">
       <div className="relative">
@@ -26,7 +30,7 @@ export default function ProfileHeader({
           </div>
         </div>
         <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-black px-3 py-1 rounded-full shadow-lg border-2 border-background-dark whitespace-nowrap uppercase tracking-wider">
-          Level {level}
+          {t("level", { level })}
         </div>
       </div>
       <div className="text-center mt-2">

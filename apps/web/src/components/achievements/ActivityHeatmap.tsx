@@ -2,6 +2,7 @@
 
 import MaterialIcon from "@/components/icons/MaterialIcon";
 import type { ActivityData, ActivityDay, Timeframe } from "@/lib/hooks/use-achievements";
+import { useTranslations } from "next-intl";
 
 type ActivityLevel = 0 | 1 | 2 | 3;
 
@@ -113,8 +114,8 @@ function MonthView({ activity }: { activity: ActivityData }) {
             <div
               key={day.date}
               className={`w-8 h-8 rounded-full flex items-center justify-center relative transition-colors ${isPerfect
-                  ? "bg-emerald-500/20 border border-emerald-500/40"
-                  : getLevelColor(day.level)
+                ? "bg-emerald-500/20 border border-emerald-500/40"
+                : getLevelColor(day.level)
                 } ${inStreak ? "ring-1 ring-orange-400/50" : ""}`}
             >
               {isPerfect ? (
@@ -213,10 +214,10 @@ function YearView({ activity }: { activity: ActivityData }) {
                     <div
                       key={`${wi}-${di}`}
                       className={`w-[10px] h-[10px] rounded-[2px] ${isPerfect
-                          ? inStreak
-                            ? "bg-orange-400"
-                            : "bg-emerald-500"
-                          : getLevelColor(cell.level)
+                        ? inStreak
+                          ? "bg-orange-400"
+                          : "bg-emerald-500"
+                        : getLevelColor(cell.level)
                         }`}
                       title={cell.date}
                     />
@@ -232,16 +233,17 @@ function YearView({ activity }: { activity: ActivityData }) {
 }
 
 export default function ActivityHeatmap({ activity, timeframe }: ActivityHeatmapProps) {
+  const t = useTranslations("Achievements.activity");
   const stats = activity?.stats;
 
   return (
     <div className="px-4 py-4">
       <div className="flex items-center justify-between mb-3 px-1">
         <div>
-          <h2 className="text-lg font-bold text-white">Activity</h2>
+          <h2 className="text-lg font-bold text-white">{t("title")}</h2>
           {stats && (
             <p className="text-xs text-slate-400 mt-0.5">
-              {stats.coverageRate}% coverage · {stats.activeDays}/{stats.totalDays} days · {stats.perfectDays} perfect
+              {t("stats", { coverage: stats.coverageRate, activeDays: stats.activeDays, totalDays: stats.totalDays, perfectDays: stats.perfectDays })}
             </p>
           )}
         </div>
@@ -254,7 +256,7 @@ export default function ActivityHeatmap({ activity, timeframe }: ActivityHeatmap
           </div>
           <span className="flex items-center gap-0.5">
             <MaterialIcon name="local_fire_department" filled className="text-[10px] text-orange-400" />
-            <span>streak</span>
+            <span>{t("streakLabel")}</span>
           </span>
         </div>
       </div>

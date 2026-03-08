@@ -10,8 +10,10 @@ import BadgesCarousel from "@/components/achievements/BadgesCarousel";
 import RewardCard from "@/components/achievements/RewardCard";
 import XPProgress from "@/components/achievements/XPProgress";
 import { useAchievements } from "@/lib/hooks/use-achievements";
+import { useTranslations } from "next-intl";
 
 export default function AchievementsPage() {
+  const t = useTranslations("Achievements");
   const {
     achievements,
     rewards,
@@ -29,7 +31,7 @@ export default function AchievementsPage() {
       <div className="sticky top-0 z-10 bg-background-dark/95 backdrop-blur-sm border-b border-white/5 pb-2">
         <div className="flex items-center justify-between p-4">
           <BackButton />
-          <h1 className="text-lg font-bold tracking-tight">Achievements</h1>
+          <h1 className="text-lg font-bold tracking-tight">{t("title")}</h1>
           <button className="text-slate-400 hover:text-white transition-colors">
             <MaterialIcon name="settings" />
           </button>

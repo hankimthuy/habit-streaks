@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import MaterialIcon from "@/components/icons/MaterialIcon";
+import { useTranslations } from "next-intl";
 
 interface CreateHabitModalProps {
   open: boolean;
@@ -29,6 +30,7 @@ export default function CreateHabitModal({
   onClose,
   onCreated,
 }: CreateHabitModalProps) {
+  const t = useTranslations("CreateModals.habit");
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
   const [icon, setIcon] = useState("check_circle");
@@ -42,7 +44,7 @@ export default function CreateHabitModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) {
-      setError("Habit name is required");
+      setError(t("errorNameReq"));
       return;
     }
 
@@ -90,7 +92,7 @@ export default function CreateHabitModal({
 
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-white">Create New Habit</h2>
+          <h2 className="text-xl font-bold text-white">{t("title")}</h2>
           <button
             onClick={onClose}
             className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white transition-colors"
@@ -105,39 +107,37 @@ export default function CreateHabitModal({
             <button
               type="button"
               onClick={() => setType("positive")}
-              className={`flex-1 py-3 rounded-2xl text-sm font-bold transition-colors flex items-center justify-center gap-1.5 ${
-                type === "positive"
+              className={`flex-1 py-3 rounded-2xl text-sm font-bold transition-colors flex items-center justify-center gap-1.5 ${type === "positive"
                   ? "bg-accent-green/20 text-accent-green border border-accent-green/50"
                   : "bg-slate-800 text-slate-400 border border-slate-700"
-              }`}
+                }`}
             >
               <MaterialIcon name="add_circle" className="text-base" />
-              Do This
+              {t("doThis")}
             </button>
             <button
               type="button"
               onClick={() => setType("negative")}
-              className={`flex-1 py-3 rounded-2xl text-sm font-bold transition-colors flex items-center justify-center gap-1.5 ${
-                type === "negative"
+              className={`flex-1 py-3 rounded-2xl text-sm font-bold transition-colors flex items-center justify-center gap-1.5 ${type === "negative"
                   ? "bg-accent-red/20 text-accent-red border border-accent-red/50"
                   : "bg-slate-800 text-slate-400 border border-slate-700"
-              }`}
+                }`}
             >
               <MaterialIcon name="do_not_disturb_on" className="text-base" />
-              Avoid This
+              {t("avoidThis")}
             </button>
           </div>
 
           {/* Title */}
           <div>
             <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">
-              Habit Name
+              {t("habitName")}
             </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Drink 2L Water"
+              placeholder={t("habitPlaceholder")}
               className="w-full bg-slate-800 border border-slate-700 rounded-2xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-primary transition-colors"
             />
           </div>
@@ -145,13 +145,13 @@ export default function CreateHabitModal({
           {/* Subtitle */}
           <div>
             <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">
-              Description (optional)
+              {t("desc")}
             </label>
             <input
               type="text"
               value={subtitle}
               onChange={(e) => setSubtitle(e.target.value)}
-              placeholder="e.g. Hydration goal"
+              placeholder={t("descPlaceholder")}
               className="w-full bg-slate-800 border border-slate-700 rounded-2xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-primary transition-colors"
             />
           </div>
@@ -159,13 +159,13 @@ export default function CreateHabitModal({
           {/* Category */}
           <div>
             <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">
-              Category (optional)
+              {t("category")}
             </label>
             <input
               type="text"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              placeholder="e.g. Health, Learning"
+              placeholder={t("categoryPlaceholder")}
               className="w-full bg-slate-800 border border-slate-700 rounded-2xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-primary transition-colors"
             />
           </div>
@@ -173,7 +173,7 @@ export default function CreateHabitModal({
           {/* Icon picker */}
           <div>
             <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">
-              Icon
+              {t("icon")}
             </label>
             <div className="flex flex-wrap gap-2">
               {ICON_OPTIONS.map((ic) => (
@@ -181,11 +181,10 @@ export default function CreateHabitModal({
                   key={ic}
                   type="button"
                   onClick={() => setIcon(ic)}
-                  className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
-                    icon === ic
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${icon === ic
                       ? "bg-primary text-white"
                       : "bg-slate-800 text-slate-400 hover:text-white"
-                  }`}
+                    }`}
                 >
                   <MaterialIcon name={ic} className="text-xl" />
                 </button>
@@ -204,7 +203,7 @@ export default function CreateHabitModal({
             disabled={loading}
             className="w-full py-4 bg-gradient-to-r from-primary to-orange-500 rounded-2xl text-white font-bold text-base shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 transition-shadow disabled:opacity-50"
           >
-            {loading ? "Creating..." : "Create Habit"}
+            {loading ? t("creatingBtn") : t("createBtn")}
           </button>
         </form>
       </div>

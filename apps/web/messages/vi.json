@@ -1,0 +1,198 @@
+{
+    "Common": {
+        "loading": "Đang tải...",
+        "save": "Lưu",
+        "cancel": "Hủy",
+        "error": "Đã xảy ra lỗi."
+    },
+    "Dashboard": {
+        "title": "FlowStreaks",
+        "description": "Hệ điều hành năng lượng cá nhân. Quản trị năng lực, kỷ luật linh hoạt và nhận thưởng xứng đáng.",
+        "level": "Cấp {level} 🔥",
+        "stats": {
+            "todayStreaks": "Nhiệm vụ hôm nay",
+            "dosAndDonts": "Nên & Không nên",
+            "goalStreaks": "Chuỗi mục tiêu",
+            "doneCount": "Hoàn thành {completed}/{total}",
+            "followedCount": "Đã theo {completed}/{total}",
+            "viewAll": "Xem tất cả"
+        },
+        "labels": {
+            "days": "ngày",
+            "lifeRule": "Quy tắc / Thói quen nhỏ",
+            "perfect": "Hoàn hảo",
+            "onTrack": "Đang tiến triển",
+            "keepGoing": "Tiếp tục nhé",
+            "checkIn": "Điểm danh",
+            "done": "Xong",
+            "doneExclamation": "Xong!",
+            "loading": "Đang tải...",
+            "currentStreak": "Chuỗi hiện tại",
+            "completion": "Tỉ lệ hoàn thành"
+        }
+    },
+    "LifeFlow": {
+        "todaysLog": "Nhật ký hôm nay",
+        "days": "{count} Ngày",
+        "dailyGoals": "Mục tiêu hàng ngày",
+        "percentDone": "Đã xong {percent}%",
+        "completionTitle": "Tuyệt vời!",
+        "completionDesc": "Bạn đã hoàn thành xuất sắc tất cả thói quen dự định cho hôm nay."
+    },
+    "Achievements": {
+        "title": "Thành tựu",
+        "streak": {
+            "dayStreak": "Chuỗi ngày!"
+        },
+        "timeframe": {
+            "week": "Tuần",
+            "month": "Tháng",
+            "year": "Năm"
+        },
+        "activity": {
+            "title": "Hoạt động",
+            "stats": "{coverage}% hoàn thành · {activeDays}/{totalDays} ngày · {perfectDays} hoàn hảo",
+            "streakLabel": "chuỗi"
+        },
+        "badges": {
+            "title": "Huy hiệu",
+            "unlocked": "Đã mở khóa {unlocked}/{total}"
+        },
+        "rewards": {
+            "title": "Phần thưởng",
+            "unlocked": "Đã mở khóa {unlocked}/{total}",
+            "new": "Mới",
+            "used": "Đã dùng",
+            "redeem": "Đổi thưởng",
+            "until": "Đến {date}"
+        },
+        "xp": {
+            "level": "Cấp {level}",
+            "xp": "{current} / {target} XP",
+            "toNextLevel": "Cần thêm {remaining} XP để lên Cấp {nextLevel}",
+            "streakDays": "Chuỗi {days} ngày",
+            "keepStreak": "Giữ chuỗi ngày trong",
+            "moreDays": "thêm {days} ngày nữa",
+            "toUnlock": "để mở khóa!",
+            "progress": "{remaining}/{target} ngày"
+        }
+    },
+    "Insights": {
+        "title": "Góc nhìn",
+        "page": {
+            "desc1": "Theo dõi sự kiên trì qua thời gian với tỷ lệ hoàn thành.",
+            "desc2": "Xem lại bạn đã tuân thủ quy tắc hôm nay tốt như thế nào.",
+            "desc3": "Chuỗi hiện tại so với chuỗi kỷ lục dài nhất.",
+            "desc4": "Lời khuyên từ AI dựa trên mức độ hoạt động đều đặn.",
+            "aiComingSoon": "Góc nhìn AI Nháp Sắp Tới",
+            "aiDesc": "Chúng tôi sẽ phân tích khối lượng và tỷ lệ để chống kiệt sức và tối ưu cho bạn."
+        },
+        "doDont": {
+            "title": "Theo dõi Nên & Không Nên",
+            "today": "Hôm nay",
+            "noRules": "Chưa có quy tắc nào. Hãy tạo một cái ở trang chủ.",
+            "followed": "Đã theo",
+            "broken": "Đã phá",
+            "streak": "Chuỗi {days} ngày"
+        },
+        "longestStreaks": {
+            "title": "Chuỗi Kỷ Lục",
+            "noStreaks": "Chưa có chuỗi nào được lưu.",
+            "bestDays": "Ngày cao nhất"
+        },
+        "completion": {
+            "title": "Hoàn thành {timeframe}",
+            "perfect": "Tuyệt vời!",
+            "greatJob": "Làm tốt lắm!",
+            "keepGoing": "Tiếp tục nhé!",
+            "roomToGrow": "Cố gắng lên",
+            "nothingTracked": "Chưa theo dõi",
+            "completed": "Đã xong",
+            "missed": "Bỏ lỡ",
+            "noHabitsTracked": "Không có thói quen trong {timeframe} này"
+        }
+    },
+    "Profile": {
+        "header": {
+            "level": "Cấp {level}"
+        },
+        "stats": {
+            "totalStreaks": "Tổng Chuỗi",
+            "giftsEarned": "Quà Đã Nhận"
+        },
+        "fireCollection": {
+            "title": "Bộ Sưu Tập Lửa",
+            "unlocked": "Mở khóa {count}",
+            "lockedText": "ĐÃ KHÓA"
+        },
+        "settings": {
+            "title": "Cài đặt",
+            "editProfile": "Sửa hồ sơ",
+            "notifications": "Cài đặt thông báo",
+            "appTheme": "Giao diện",
+            "signOut": "Đăng xuất",
+            "themeDark": "Tối"
+        }
+    },
+    "CreateModals": {
+        "selector": {
+            "title": "Tạo chuỗi mới",
+            "dailyStreak": {
+                "title": "Chuỗi hàng ngày",
+                "desc": "Chọn khoảng thời gian và điểm danh mỗi ngày"
+            },
+            "freeCheckin": {
+                "title": "Điểm danh tự do",
+                "desc": "Không lịch trình cụ thể — điểm danh khi hoàn thành"
+            },
+            "doDont": {
+                "title": "Nên & Không Nên",
+                "desc": "Thiết lập quy tắc sống và theo dõi tuân thủ mỗi ngày"
+            }
+        },
+        "habit": {
+            "title": "Tạo Thói Quen Mới",
+            "doThis": "Nên làm",
+            "avoidThis": "Nên tránh",
+            "habitName": "Tên Thói Quen",
+            "habitPlaceholder": "VD: Uống 2L Nước",
+            "desc": "Mô tả (Không bắt buộc)",
+            "descPlaceholder": "VD: Mục tiêu uống nước",
+            "category": "Danh mục (Không bắt buộc)",
+            "categoryPlaceholder": "VD: Sức khỏe, Học tập",
+            "icon": "Biểu tượng",
+            "errorNameReq": "Bắt buộc nhập tên thói quen",
+            "createBtn": "Tạo Thói Quen",
+            "creatingBtn": "Đang tạo..."
+        },
+        "streak": {
+            "dailyTitle": "Chuỗi Hàng Ngày",
+            "freeTitle": "Điểm Danh Tự Do",
+            "ruleTitle": "Nên & Không Nên",
+            "labelDaily": "Hàng Ngày",
+            "labelFree": "Tự Do",
+            "labelRule": "Quy Tắc",
+            "streakName": "Tên Chuỗi",
+            "placeholderDaily": "VD: Thử thách đọc sách 30 ngày",
+            "placeholderFree": "VD: Hoàn thành 10 dự án phụ",
+            "placeholderRule": "VD: Không ăn đường",
+            "desc": "Mô tả (Không bắt buộc)",
+            "descPlaceholder": "VD: Đọc ít nhất 30 phút",
+            "startDate": "Ngày bắt đầu",
+            "endDate": "Ngày kết thúc",
+            "lifelong": "Quy tắc trọn đời (Vô tận)",
+            "toComplete": "để hoàn thành",
+            "targetCount": "Mục tiêu số lần",
+            "reward": "Phần thưởng (Không bắt buộc)",
+            "rewardPlaceholder": "VD: Mua một quyển sách mới",
+            "color": "Màu sắc",
+            "icon": "Biểu tượng",
+            "errorNameReq": "Bắt buộc nhập tên",
+            "errorDatesReq": "Bắt buộc chọn ngày bắt đầu và kết thúc",
+            "errorDateOrder": "Ngày kết thúc phải sau ngày bắt đầu",
+            "errorEndDateReq": "Bắt buộc nhập ngày kết thúc (nếu không vô tận)",
+            "createBtn": "Tạo Chuỗi",
+            "creatingBtn": "Đang tạo..."
+        }
+    }
+}

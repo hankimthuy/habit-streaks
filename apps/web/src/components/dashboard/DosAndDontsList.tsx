@@ -1,6 +1,7 @@
 "use client";
 
 import MaterialIcon from "@/components/icons/MaterialIcon";
+import { useTranslations } from "next-intl";
 import type { DashboardGoalStreak } from "@/lib/hooks/use-dashboard";
 
 interface DosAndDontsListProps {
@@ -32,6 +33,7 @@ function RuleCard({
     const checkedToday = rule.last_checkin_date === today;
     const colors = COLOR_MAP[rule.color] ?? COLOR_MAP.primary;
     const isLoading = loadingGoals?.has(rule.id);
+    const t = useTranslations("Dashboard.labels");
 
     return (
         <div className="group flex items-center p-4 rounded-3xl bg-surface-dark border border-slate-700/50 transition-colors relative">
@@ -45,7 +47,7 @@ function RuleCard({
                     {rule.title}
                 </h4>
                 <p className={`text-xs ${checkedToday ? "text-slate-500" : "text-slate-400"}`}>
-                    {rule.subtitle || "Life Rule / Atomic Habit"}
+                    {rule.subtitle || t("lifeRule")}
                 </p>
             </div>
             <div className="flex items-center gap-2">
@@ -57,10 +59,10 @@ function RuleCard({
                         }}
                         disabled={isLoading}
                         className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${checkedToday
-                                ? "bg-accent-green text-surface-dark shadow-lg shadow-accent-green/20"
-                                : isLoading
-                                    ? "bg-slate-700 text-slate-400 cursor-not-allowed"
-                                    : "bg-slate-800 border border-slate-700 text-slate-400 hover:text-white hover:border-indigo-500"
+                            ? "bg-accent-green text-surface-dark shadow-lg shadow-accent-green/20"
+                            : isLoading
+                                ? "bg-slate-700 text-slate-400 cursor-not-allowed"
+                                : "bg-slate-800 border border-slate-700 text-slate-400 hover:text-white hover:border-indigo-500"
                             }`}
                     >
                         {isLoading ? (
@@ -76,6 +78,7 @@ function RuleCard({
 }
 
 export default function DosAndDontsList({ rules, today, onLog, loadingGoals }: DosAndDontsListProps) {
+    const t = useTranslations("Dashboard.stats");
     const completedCount = rules.filter((r) => r.last_checkin_date === today).length;
 
     if (rules.length === 0) return null;
@@ -84,10 +87,10 @@ export default function DosAndDontsList({ rules, today, onLog, loadingGoals }: D
         <section>
             <div className="flex items-center justify-between mb-4 px-1">
                 <h2 className="text-xl font-bold flex items-center gap-2 text-indigo-400">
-                    Do's & Don'ts
+                    {t("dosAndDonts")}
                 </h2>
                 <span className="text-xs font-bold bg-slate-800 px-3 py-1 rounded-full text-slate-300">
-                    {completedCount}/{rules.length} Followed
+                    {t("followedCount", { completed: completedCount, total: rules.length })}
                 </span>
             </div>
             <div className="flex flex-col gap-3">

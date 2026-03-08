@@ -1,15 +1,23 @@
 import type { Metadata, Viewport } from "next";
+import { getLocale, getMessages } from "next-intl/server";
+import { NextIntlClientProvider } from "next-intl";
 import "./globals.css";
 
-export const metadata: Metadata = {
-  title: "FlowStreaks",
-  description: "Track your habits, build streaks, earn rewards.",
-  manifest: "/manifest.json",
-  icons: {
-    icon: "/logo.jpg",
-    apple: "/logo.jpg",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const messages = await getMessages() as any;
+  const t = messages?.Dashboard;
+
+  return {
+    title: t?.title || "FlowStreaks",
+    description: t?.description || "Track your habits, build streaks, earn rewards.",
+    manifest: "/manifest.json",
+    icons: {
+      icon: "/logo.jpg",
+      apple: "/logo.jpg",
+    },
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -17,13 +25,16 @@ export const viewport: Viewport = {
   themeColor: "#18181b",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="en" className="dark">
+    <html lang={locale} className="dark">
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -39,9 +50,11 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased overflow-x-hidden">
-        <div className="relative min-h-screen flex flex-col max-w-md mx-auto bg-background-light dark:bg-background-dark shadow-2xl border-x border-slate-200 dark:border-slate-800">
-          {children}
-        </div>
+        <NextIntlClientProvider messages={messages}>
+          <div className="relative min-h-screen flex flex-col max-w-md mx-auto bg-background-light dark:bg-background-dark shadow-2xl border-x border-slate-200 dark:border-slate-800">
+            {children}
+          </div>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

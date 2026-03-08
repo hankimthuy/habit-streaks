@@ -1,12 +1,15 @@
 "use client";
 
 import MaterialIcon from "@/components/icons/MaterialIcon";
+import { useTranslations } from "next-intl";
 
 interface StreakCompletionCardProps {
   onShare?: () => void;
 }
 
 export default function StreakCompletionCard({ onShare }: StreakCompletionCardProps) {
+  const t = useTranslations("LifeFlow");
+
   return (
     <div className="mt-4 p-6 rounded-3xl bg-gradient-to-br from-card-dark to-background-dark border border-stone-800 relative overflow-hidden group">
       <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
@@ -14,9 +17,9 @@ export default function StreakCompletionCard({ onShare }: StreakCompletionCardPr
         <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary mb-1 shadow-[0_0_15px_rgba(244,157,37,0.3)] animate-pulse">
           <MaterialIcon name="local_fire_department" className="text-2xl" />
         </div>
-        <h3 className="text-lg font-bold text-white">Streak Maintained!</h3>
+        <h3 className="text-lg font-bold text-white">{t("completionTitle")}</h3>
         <p className="text-sm text-stone-400">
-          You&apos;re on fire! Keep the momentum going for tomorrow.
+          {t("completionDesc")}
         </p>
         <button
           onClick={onShare}

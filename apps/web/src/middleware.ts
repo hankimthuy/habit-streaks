@@ -8,6 +8,11 @@ export async function middleware(request: NextRequest) {
     },
   });
 
+  // i18n Next-Intl Customization without rewrites
+  if (!request.cookies.has('NEXT_LOCALE')) {
+    response.cookies.set('NEXT_LOCALE', 'en');
+  }
+
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 

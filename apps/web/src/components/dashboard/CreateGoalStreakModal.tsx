@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import MaterialIcon from "@/components/icons/MaterialIcon";
+import { useTranslations } from "next-intl";
 
 interface CreateGoalStreakModalProps {
   open: boolean;
@@ -39,6 +40,8 @@ export default function CreateGoalStreakModal({
   onClose,
   onCreated,
 }: CreateGoalStreakModalProps) {
+  const t = useTranslations("CreateModals.streak");
+
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
   const [icon, setIcon] = useState("local_fire_department");
@@ -104,19 +107,19 @@ export default function CreateGoalStreakModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) {
-      setError("Name is required");
+      setError(t("errorNameReq"));
       return;
     }
     if (mode === "daily" && (!startDate || !endDate)) {
-      setError("Start date and end date are required");
+      setError(t("errorDatesReq"));
       return;
     }
     if (mode === "daily" && endDate < startDate) {
-      setError("End date must be after start date");
+      setError(t("errorDateOrder"));
       return;
     }
     if (mode === "do_dont" && !isEndless && !endDate) {
-      setError("End date is required if not endless");
+      setError(t("errorEndDateReq"));
       return;
     }
 
@@ -182,7 +185,7 @@ export default function CreateGoalStreakModal({
               <MaterialIcon name="arrow_back" className="text-lg" />
             </button>
             <h2 className="text-xl font-bold text-white">
-              {isDaily ? "Daily Streak" : isFree ? "Free Check-in" : "Do's & Don'ts"}
+              {isDaily ? t("dailyTitle") : isFree ? t("freeTitle") : t("ruleTitle")}
             </h2>
           </div>
           <div
@@ -193,7 +196,7 @@ export default function CreateGoalStreakModal({
                 : "bg-indigo-500/20 text-indigo-500"
               }`}
           >
-            {isDaily ? "Daily" : isFree ? "Free" : "Rule"}
+            {isDaily ? t("labelDaily") : isFree ? t("labelFree") : t("labelRule")}
           </div>
         </div>
 
@@ -201,7 +204,7 @@ export default function CreateGoalStreakModal({
           {/* Title */}
           <div>
             <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">
-              Streak Name
+              {t("streakName")}
             </label>
             <input
               type="text"
@@ -209,10 +212,10 @@ export default function CreateGoalStreakModal({
               onChange={(e) => setTitle(e.target.value)}
               placeholder={
                 isDaily
-                  ? "e.g. 30-Day Reading Challenge"
+                  ? t("placeholderDaily")
                   : isFree
-                    ? "e.g. Complete 10 Side Projects"
-                    : "e.g. No Sugar"
+                    ? t("placeholderFree")
+                    : t("placeholderRule")
               }
               className="w-full bg-slate-800 border border-slate-700 rounded-2xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-primary transition-colors"
             />
@@ -221,13 +224,13 @@ export default function CreateGoalStreakModal({
           {/* Subtitle */}
           <div>
             <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">
-              Description (optional)
+              {t("desc")}
             </label>
             <input
               type="text"
               value={subtitle}
               onChange={(e) => setSubtitle(e.target.value)}
-              placeholder="e.g. Read at least 30 minutes"
+              placeholder={t("descPlaceholder")}
               className="w-full bg-slate-800 border border-slate-700 rounded-2xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-primary transition-colors"
             />
           </div>
@@ -237,7 +240,7 @@ export default function CreateGoalStreakModal({
             <div className="flex gap-3">
               <div className="flex-1">
                 <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">
-                  Start Date
+                  {t("startDate")}
                 </label>
                 <input
                   type="date"
@@ -248,7 +251,7 @@ export default function CreateGoalStreakModal({
               </div>
               <div className="flex-1">
                 <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">
-                  End Date
+                  {t("endDate")}
                 </label>
                 <input
                   type="date"
@@ -275,13 +278,13 @@ export default function CreateGoalStreakModal({
                   <div className={`block w-10 h-6 rounded-full transition-colors ${isEndless ? 'bg-indigo-500' : 'bg-slate-700'}`}></div>
                   <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${isEndless ? 'translate-x-4' : ''}`}></div>
                 </div>
-                <span className="text-sm font-bold text-white">Lifelong Rule (Endless)</span>
+                <span className="text-sm font-bold text-white">{t("lifelong")}</span>
               </label>
 
               {!isEndless && (
                 <div>
                   <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">
-                    End Date
+                    {t("endDate")}
                   </label>
                   <input
                     type="date"
@@ -302,14 +305,14 @@ export default function CreateGoalStreakModal({
               <span className="text-sm text-primary font-bold">
                 {computedTargetDays} days
               </span>
-              <span className="text-xs text-slate-400">to complete</span>
+              <span className="text-xs text-slate-400">{t("toComplete")}</span>
             </div>
           )}
 
           {isFree && (
             <div>
               <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">
-                Target Count
+                {t("targetCount")}
               </label>
               <input
                 type="number"
@@ -326,13 +329,13 @@ export default function CreateGoalStreakModal({
           {/* Reward */}
           <div>
             <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">
-              Reward (optional)
+              {t("reward")}
             </label>
             <input
               type="text"
               value={rewardTitle}
               onChange={(e) => setRewardTitle(e.target.value)}
-              placeholder="e.g. Buy a new book"
+              placeholder={t("rewardPlaceholder")}
               className="w-full bg-slate-800 border border-slate-700 rounded-2xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-primary transition-colors"
             />
           </div>
@@ -340,7 +343,7 @@ export default function CreateGoalStreakModal({
           {/* Color picker */}
           <div>
             <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">
-              Color
+              {t("color")}
             </label>
             <div className="flex gap-2">
               {COLOR_OPTIONS.map((c) => (
@@ -364,7 +367,7 @@ export default function CreateGoalStreakModal({
           {/* Icon picker */}
           <div>
             <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">
-              Icon
+              {t("icon")}
             </label>
             <div className="flex flex-wrap gap-2">
               {ICON_OPTIONS.map((ic) => (
@@ -394,7 +397,7 @@ export default function CreateGoalStreakModal({
             disabled={loading}
             className="w-full py-4 bg-gradient-to-r from-primary to-orange-500 rounded-2xl text-white font-bold text-base shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 transition-shadow disabled:opacity-50"
           >
-            {loading ? "Creating..." : "Create Streak"}
+            {loading ? t("creatingBtn") : t("createBtn")}
           </button>
         </form>
       </div>

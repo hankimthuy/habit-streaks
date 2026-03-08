@@ -1,6 +1,7 @@
 "use client";
 
 import MaterialIcon from "@/components/icons/MaterialIcon";
+import { useTranslations } from "next-intl";
 
 interface ProfileStatsProps {
   totalStreaks?: number;
@@ -11,12 +12,14 @@ export default function ProfileStats({
   totalStreaks = 458,
   giftsEarned = 24,
 }: ProfileStatsProps) {
+  const t = useTranslations("Profile.stats");
+
   return (
     <section>
       <div className="bg-surface-dark p-5 rounded-3xl flex justify-between items-center">
         <div className="flex flex-col gap-1">
           <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.1em]">
-            Total Streaks
+            {t("totalStreaks")}
           </span>
           <div className="flex items-center gap-2">
             <MaterialIcon
@@ -29,7 +32,7 @@ export default function ProfileStats({
         <div className="w-px h-10 bg-slate-700" />
         <div className="flex flex-col gap-1 items-end text-right">
           <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.1em]">
-            Gifts Earned
+            {t("giftsEarned")}
           </span>
           <div className="flex items-center gap-2">
             <span className="text-2xl font-black text-white">{giftsEarned}</span>

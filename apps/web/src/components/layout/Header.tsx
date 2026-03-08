@@ -1,6 +1,7 @@
 "use client";
 
 import MaterialIcon from "@/components/icons/MaterialIcon";
+import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
 
 interface HeaderProps {
   userName?: string;
@@ -33,26 +34,29 @@ export default function Header({
           </div>
         </div>
       </div>
-      <button className="relative group">
-        <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800">
-          {avatarUrl ? (
-            <img
-              alt="User Avatar"
-              className="w-full h-full object-cover"
-              src={avatarUrl}
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <MaterialIcon name="person" className="text-slate-400" />
+      <div className="flex items-center gap-3">
+        <LanguageSwitcher />
+        <button className="relative group">
+          <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800">
+            {avatarUrl ? (
+              <img
+                alt="User Avatar"
+                className="w-full h-full object-cover"
+                src={avatarUrl}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <MaterialIcon name="person" className="text-slate-400" />
+              </div>
+            )}
+          </div>
+          {notificationCount > 0 && (
+            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center border-2 border-background-light dark:border-background-dark text-[10px] font-bold text-white">
+              {notificationCount}
             </div>
           )}
-        </div>
-        {notificationCount > 0 && (
-          <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center border-2 border-background-light dark:border-background-dark text-[10px] font-bold text-white">
-            {notificationCount}
-          </div>
-        )}
-      </button>
+        </button>
+      </div>
     </header>
   );
 }

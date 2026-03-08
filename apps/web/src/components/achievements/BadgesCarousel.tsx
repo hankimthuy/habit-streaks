@@ -2,6 +2,7 @@
 
 import MaterialIcon from "@/components/icons/MaterialIcon";
 import type { AchievementData } from "@/lib/hooks/use-achievements";
+import { useTranslations } from "next-intl";
 
 interface AwardsGridProps {
   achievements: AchievementData[];
@@ -17,6 +18,8 @@ const GRADIENTS = [
 ];
 
 export default function BadgesCarousel({ achievements }: AwardsGridProps) {
+  const t = useTranslations("Achievements.badges");
+
   if (achievements.length === 0) return null;
 
   const unlocked = achievements.filter((a) => a.unlocked);
@@ -28,10 +31,10 @@ export default function BadgesCarousel({ achievements }: AwardsGridProps) {
     <div className="px-4 mb-6">
       <div className="flex items-center justify-between mb-3 px-1">
         <h2 className="text-lg font-bold text-white">
-          Badges
+          {t("title")}
         </h2>
         <span className="text-xs font-semibold text-slate-400">
-          {unlockedCount}/{achievements.length} unlocked
+          {t("unlocked", { unlocked: unlockedCount, total: achievements.length })}
         </span>
       </div>
       <div className="grid grid-cols-5 gap-3">
@@ -50,11 +53,10 @@ export default function BadgesCarousel({ achievements }: AwardsGridProps) {
                   <div className={`absolute inset-0 bg-gradient-to-br ${gradient} rounded-full blur-md opacity-40`} />
                 )}
                 <div
-                  className={`relative w-11 h-11 rounded-full flex items-center justify-center border transition-all ${
-                    isUnlocked
+                  className={`relative w-11 h-11 rounded-full flex items-center justify-center border transition-all ${isUnlocked
                       ? `bg-gradient-to-br ${gradient} border-white/20 shadow-md`
                       : "bg-surface-dark border-dashed border-slate-600/60"
-                  }`}
+                    }`}
                 >
                   <MaterialIcon
                     name={isUnlocked ? a.icon : "lock"}
@@ -63,9 +65,8 @@ export default function BadgesCarousel({ achievements }: AwardsGridProps) {
                 </div>
               </div>
               <span
-                className={`text-[9px] text-center leading-tight line-clamp-2 ${
-                  isUnlocked ? "font-bold text-slate-200" : "font-medium text-slate-500"
-                }`}
+                className={`text-[9px] text-center leading-tight line-clamp-2 ${isUnlocked ? "font-bold text-slate-200" : "font-medium text-slate-500"
+                  }`}
               >
                 {a.name}
               </span>

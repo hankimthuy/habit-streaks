@@ -1,8 +1,8 @@
 "use client";
 
 import MaterialIcon from "@/components/icons/MaterialIcon";
-
 import type { DashboardGoalStreak } from "@/lib/hooks/use-dashboard";
+import { useTranslations } from "next-intl";
 
 interface LongestStreaksProps {
   goalStreaks?: DashboardGoalStreak[];
@@ -15,14 +15,16 @@ const dotColor: Record<string, string> = {
 };
 
 export default function LongestStreaks({ goalStreaks = [] }: LongestStreaksProps) {
+  const t = useTranslations("Insights.longestStreaks");
+
   if (goalStreaks.length === 0) {
     return (
       <section>
         <h2 className="text-slate-400 text-sm font-bold uppercase tracking-widest mb-4">
-          Longest Streaks
+          {t("title")}
         </h2>
         <div className="bg-surface-dark p-6 rounded-2xl shadow text-center">
-          <p className="text-slate-500 text-sm">No streaks recorded yet.</p>
+          <p className="text-slate-500 text-sm">{t("noStreaks")}</p>
         </div>
       </section>
     );
@@ -34,7 +36,7 @@ export default function LongestStreaks({ goalStreaks = [] }: LongestStreaksProps
   return (
     <section>
       <h2 className="text-slate-400 text-sm font-bold uppercase tracking-widest mb-4">
-        Longest Streaks
+        {t("title")}
       </h2>
       <div className="flex flex-col gap-3">
         {sortedStreaks.map((streak) => {
@@ -97,7 +99,7 @@ export default function LongestStreaks({ goalStreaks = [] }: LongestStreaksProps
                   className={`text-[10px] font-bold uppercase ${isActive ? "text-slate-500" : "text-slate-600"
                     }`}
                 >
-                  BEST DAYS
+                  {t("bestDays")}
                 </p>
               </div>
             </div>

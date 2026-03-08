@@ -1,6 +1,7 @@
 "use client";
 
 import type { Timeframe } from "@/lib/hooks/use-achievements";
+import { useTranslations } from "next-intl";
 
 const timeframes: Timeframe[] = ["Week", "Month", "Year"];
 
@@ -13,6 +14,8 @@ export default function TimeframeToggle({
   value,
   onChange,
 }: TimeframeToggleProps) {
+  const t = useTranslations("Achievements.timeframe");
+
   return (
     <div className="px-6 pb-2">
       <div className="flex p-1 bg-surface-dark rounded-full">
@@ -20,13 +23,12 @@ export default function TimeframeToggle({
           <button
             key={tf}
             onClick={() => onChange(tf)}
-            className={`flex-1 py-2 rounded-full text-sm font-semibold transition-colors ${
-              value === tf
+            className={`flex-1 py-2 rounded-full text-sm font-semibold transition-colors ${value === tf
                 ? "bg-primary text-white shadow-lg shadow-primary/20 font-bold"
                 : "text-slate-400 hover:text-slate-200"
-            }`}
+              }`}
           >
-            {tf}
+            {t(tf.toLowerCase())}
           </button>
         ))}
       </div>
