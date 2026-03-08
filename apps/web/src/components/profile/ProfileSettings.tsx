@@ -2,6 +2,7 @@
 
 import MaterialIcon from "@/components/icons/MaterialIcon";
 import { useTranslations } from "next-intl";
+import { useTheme } from "@/components/layout/ThemeContext";
 
 interface SettingsItem {
   icon: string;
@@ -14,16 +15,19 @@ interface SettingsItem {
 
 interface ProfileSettingsProps {
   onSignOut?: () => void;
+  onEditProfile?: () => void;
 }
 
-export default function ProfileSettings({ onSignOut }: ProfileSettingsProps) {
+export default function ProfileSettings({ onSignOut, onEditProfile }: ProfileSettingsProps) {
   const t = useTranslations("Profile.settings");
+  const { theme, toggleTheme } = useTheme();
 
   const items: SettingsItem[] = [
     {
       icon: "person",
       label: t("editProfile"),
       iconBg: "bg-accent-blue",
+      onClick: onEditProfile,
     },
     {
       icon: "notifications",
@@ -34,7 +38,8 @@ export default function ProfileSettings({ onSignOut }: ProfileSettingsProps) {
       icon: "palette",
       label: t("appTheme"),
       iconBg: "bg-accent-blue",
-      rightText: t("themeDark"),
+      rightText: theme === "dark" ? t("themeDark") : t("themeLight"),
+      onClick: toggleTheme,
     },
     {
       icon: "logout",

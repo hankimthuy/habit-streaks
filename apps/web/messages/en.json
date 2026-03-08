@@ -131,7 +131,15 @@
             "notifications": "Notification Settings",
             "appTheme": "App Theme",
             "signOut": "Sign Out",
-            "themeDark": "Dark"
+            "themeDark": "Dark",
+            "themeLight": "Light"
+        },
+        "edit": {
+            "title": "Edit Profile",
+            "name": "Full Name",
+            "username": "Username",
+            "save": "Save Changes",
+            "cancel": "Cancel"
         }
     },
     "CreateModals": {
