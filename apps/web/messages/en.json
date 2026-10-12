@@ -3,7 +3,11 @@
         "loading": "Loading...",
         "save": "Save",
         "cancel": "Cancel",
-        "error": "An error occurred."
+        "error": "An error occurred.",
+        "credit": {
+            "copyright": "© {year} FlowStreaks. All rights reserved.",
+            "madeBy": "Designed & built by"
+        }
     },
     "Dashboard": {
         "title": "FlowStreaks",
@@ -130,9 +134,9 @@
             "editProfile": "Edit Profile",
             "notifications": "Notification Settings",
             "appTheme": "App Theme",
-            "signOut": "Sign Out",
             "themeDark": "Dark",
-            "themeLight": "Light"
+            "themeLight": "Light",
+            "aboutCreator": "About the Creator"
         },
         "edit": {
             "title": "Edit Profile",

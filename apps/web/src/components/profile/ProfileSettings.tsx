@@ -3,6 +3,7 @@
 import MaterialIcon from "@/components/icons/MaterialIcon";
 import { useTranslations } from "next-intl";
 import { useTheme } from "@/components/layout/ThemeContext";
+import { AUTHOR_URL } from "@/components/layout/AppCredit";
 
 interface SettingsItem {
   icon: string;
@@ -14,11 +15,10 @@ interface SettingsItem {
 }
 
 interface ProfileSettingsProps {
-  onSignOut?: () => void;
   onEditProfile?: () => void;
 }
 
-export default function ProfileSettings({ onSignOut, onEditProfile }: ProfileSettingsProps) {
+export default function ProfileSettings({ onEditProfile }: ProfileSettingsProps) {
   const t = useTranslations("Profile.settings");
   const { theme, toggleTheme } = useTheme();
 
@@ -42,11 +42,10 @@ export default function ProfileSettings({ onSignOut, onEditProfile }: ProfileSet
       onClick: toggleTheme,
     },
     {
-      icon: "logout",
-      label: t("signOut"),
-      iconBg: "bg-accent-red",
-      labelColor: "text-accent-red",
-      onClick: onSignOut,
+      icon: "favorite",
+      label: t("aboutCreator"),
+      iconBg: "bg-accent-blue",
+      onClick: () => window.open(AUTHOR_URL, "_blank", "noopener,noreferrer"),
     },
   ];
 
@@ -70,16 +69,14 @@ export default function ProfileSettings({ onSignOut, onEditProfile }: ProfileSet
                 {item.label}
               </span>
             </div>
-            {item.label !== t("signOut") && (
-              <div className="flex items-center gap-2">
-                {item.rightText && (
-                  <span className="text-xs font-bold text-slate-500 uppercase">
-                    {item.rightText}
-                  </span>
-                )}
-                <MaterialIcon name="chevron_right" className="text-slate-600" />
-              </div>
-            )}
+            <div className="flex items-center gap-2">
+              {item.rightText && (
+                <span className="text-xs font-bold text-slate-500 uppercase">
+                  {item.rightText}
+                </span>
+              )}
+              <MaterialIcon name="chevron_right" className="text-slate-600" />
+            </div>
           </button>
         ))}
       </div>

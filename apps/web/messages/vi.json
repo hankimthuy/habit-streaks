@@ -3,7 +3,11 @@
         "loading": "Đang tải...",
         "save": "Lưu",
         "cancel": "Hủy",
-        "error": "Đã xảy ra lỗi."
+        "error": "Đã xảy ra lỗi.",
+        "credit": {
+            "copyright": "© {year} FlowStreaks. Bảo lưu mọi quyền.",
+            "madeBy": "Thiết kế & phát triển bởi"
+        }
     },
     "Dashboard": {
         "title": "FlowStreaks",
@@ -130,9 +134,9 @@
             "editProfile": "Sửa hồ sơ",
             "notifications": "Cài đặt thông báo",
             "appTheme": "Giao diện",
-            "signOut": "Đăng xuất",
             "themeDark": "Tối",
-            "themeLight": "Sáng"
+            "themeLight": "Sáng",
+            "aboutCreator": "Về tác giả"
         },
         "edit": {
             "title": "Sửa hồ sơ",

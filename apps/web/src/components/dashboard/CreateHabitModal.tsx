@@ -3,6 +3,7 @@
 import { useState } from "react";
 import MaterialIcon from "@/components/icons/MaterialIcon";
 import { useTranslations } from "next-intl";
+import { localFetch } from "@/lib/local-api";
 
 interface CreateHabitModalProps {
   open: boolean;
@@ -52,7 +53,7 @@ export default function CreateHabitModal({
     setError("");
 
     try {
-      const res = await fetch("/api/habits", {
+      const res = await localFetch("/api/habits", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title, subtitle, icon, type, category }),

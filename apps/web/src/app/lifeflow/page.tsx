@@ -1,5 +1,6 @@
 import MaterialIcon from "@/components/icons/MaterialIcon";
 import BottomNav from "@/components/layout/BottomNav";
+import AppCredit from "@/components/layout/AppCredit";
 
 export default function LifeFlowPage() {
     return (
@@ -11,6 +12,7 @@ export default function LifeFlowPage() {
             <p className="text-slate-400 text-lg max-w-sm">
                 We're working on something exciting! LifeFlow is coming soon to help you track your life's rhythms.
             </p>
+            <AppCredit className="mt-8" />
             <BottomNav />
         </div>
     );

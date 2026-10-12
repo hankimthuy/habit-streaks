@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { vnToday } from "@/lib/date-utils";
 import { useTranslations } from "next-intl";
+import { localFetch } from "@/lib/local-api";
 
 interface PeriodStats {
   total: number;
@@ -30,7 +31,7 @@ export default function MonthlyCompletion() {
   const fetchStats = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/insights?date=${today}`);
+      const res = await localFetch(`/api/insights?date=${today}`);
       if (res.ok) {
         const data: StatsData = await res.json();
         setStatsData(data);

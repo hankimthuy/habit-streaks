@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Header from "@/components/layout/Header";
 import BottomNav from "@/components/layout/BottomNav";
+import AppCredit from "@/components/layout/AppCredit";
 import FloatingActionButton from "@/components/layout/FloatingActionButton";
 import WeeklyCalendarStrip from "@/components/dashboard/WeeklyCalendarStrip";
 import StatsOverview from "@/components/dashboard/StatsOverview";
@@ -60,7 +61,7 @@ export default function DashboardPage() {
             />
           </>
         )}
-        <div className="h-8" />
+        <AppCredit />
       </main>
       <FloatingActionButton onClick={() => setSelectorOpen(true)} />
       <BottomNav />

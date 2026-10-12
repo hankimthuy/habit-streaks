@@ -2,6 +2,7 @@
 
 import MaterialIcon from "@/components/icons/MaterialIcon";
 import BottomNav from "@/components/layout/BottomNav";
+import AppCredit from "@/components/layout/AppCredit";
 import BackButton from "@/components/layout/BackButton";
 import MonthlyCompletion from "@/components/stats/MonthlyCompletion";
 import DoVsDontChart from "@/components/stats/DoVsDontChart";
@@ -54,6 +55,7 @@ export default function StatsPage() {
             </p>
           </section>
         </div>
+        <AppCredit />
       </main>
       <BottomNav />
     </>

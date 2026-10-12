@@ -2,6 +2,7 @@
 
 import MaterialIcon from "@/components/icons/MaterialIcon";
 import BottomNav from "@/components/layout/BottomNav";
+import AppCredit from "@/components/layout/AppCredit";
 import BackButton from "@/components/layout/BackButton";
 import StreakCounter from "@/components/achievements/StreakCounter";
 import TimeframeToggle from "@/components/achievements/TimeframeToggle";
@@ -54,6 +55,7 @@ export default function AchievementsPage() {
             <XPProgress profile={profile} currentStreak={currentStreak} />
           </>
         )}
+        <AppCredit />
       </div>
 
       <BottomNav />

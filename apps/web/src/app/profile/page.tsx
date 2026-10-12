@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import BottomNav from "@/components/layout/BottomNav";
+import AppCredit from "@/components/layout/AppCredit";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import ProfileStats from "@/components/profile/ProfileStats";
 import FireCollection from "@/components/profile/FireCollection";
@@ -40,6 +41,7 @@ export default function ProfilePage() {
           <FireCollection />
           <ProfileSettings onEditProfile={() => setIsEditing(true)} />
         </div>
+        <AppCredit />
       </main>
       <BottomNav />
       <EditProfileModal
