@@ -7,6 +7,11 @@
         "credit": {
             "copyright": "© {year} FlowStreaks. All rights reserved.",
             "madeBy": "Designed & built by"
+        },
+        "demoBanner": {
+            "label": "Trial version:",
+            "message": "data is only kept in this browser and may be lost. Want the real thing?",
+            "cta": "Connect with me →"
         }
     },
     "Dashboard": {

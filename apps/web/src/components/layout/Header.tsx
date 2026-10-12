@@ -16,7 +16,7 @@ export default function Header({
   notificationCount = 3,
 }: HeaderProps) {
   return (
-    <header className="pt-8 pb-4 px-6 flex items-center justify-between sticky top-0 z-20 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+    <header className="pt-8 pb-4 px-6 flex items-center justify-between sticky top-11 z-20 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
       <div className="flex items-center gap-3">
         <div className="relative">
           <div className="absolute inset-0 bg-primary blur-lg opacity-40 rounded-full" />

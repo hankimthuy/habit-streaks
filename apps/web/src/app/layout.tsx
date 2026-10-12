@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { getLocale, getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 import { ThemeProvider } from "@/components/layout/ThemeContext";
+import DemoBanner from "@/components/layout/DemoBanner";
 import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -54,6 +55,7 @@ export default async function RootLayout({
         <ThemeProvider>
           <NextIntlClientProvider messages={messages}>
             <div className="relative min-h-screen flex flex-col max-w-md mx-auto bg-background-light dark:bg-background-dark shadow-2xl border-x border-slate-200 dark:border-slate-800">
+              <DemoBanner />
               {children}
             </div>
           </NextIntlClientProvider>

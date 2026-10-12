@@ -29,7 +29,7 @@ export default function AchievementsPage() {
   return (
     <>
       {/* Header / Stats Area */}
-      <div className="sticky top-0 z-10 bg-background-dark/95 backdrop-blur-sm border-b border-white/5 pb-2">
+      <div className="sticky top-11 z-10 bg-background-dark/95 backdrop-blur-sm border-b border-white/5 pb-2">
         <div className="flex items-center justify-between p-4">
           <BackButton />
           <h1 className="text-lg font-bold tracking-tight">{t("title")}</h1>

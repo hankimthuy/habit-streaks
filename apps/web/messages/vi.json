@@ -7,6 +7,11 @@
         "credit": {
             "copyright": "© {year} FlowStreaks. Bảo lưu mọi quyền.",
             "madeBy": "Thiết kế & phát triển bởi"
+        },
+        "demoBanner": {
+            "label": "Bản dùng thử:",
+            "message": "dữ liệu chỉ nằm trên trình duyệt này, không được lưu lâu dài. Muốn dùng thật?",
+            "cta": "Kết nối với mình →"
         }
     },
     "Dashboard": {

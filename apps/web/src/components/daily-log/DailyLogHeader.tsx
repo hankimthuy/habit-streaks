@@ -16,7 +16,7 @@ export default function DailyLogHeader({
   const vnDate = formatVNDate();
 
   return (
-    <header className="sticky top-0 z-20 bg-background-dark/95 backdrop-blur-md px-6 pt-12 pb-4 border-b border-stone-800">
+    <header className="sticky top-11 z-20 bg-background-dark/95 backdrop-blur-md px-6 pt-12 pb-4 border-b border-stone-800">
       <div className="flex items-center justify-between mb-4">
         <div>
           <p className="text-sm font-medium text-stone-400 uppercase tracking-wider">
