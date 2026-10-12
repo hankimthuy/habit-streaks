@@ -3,6 +3,8 @@
 import MaterialIcon from "@/components/icons/MaterialIcon";
 import { useTranslations } from "next-intl";
 import { useTheme } from "@/components/layout/ThemeContext";
+import { AUTHOR_URL } from "@/components/layout/AppCredit";
+import { resetLocalData } from "@/lib/local-api";
 
 interface SettingsItem {
   icon: string;
@@ -14,11 +16,10 @@ interface SettingsItem {
 }
 
 interface ProfileSettingsProps {
-  onSignOut?: () => void;
   onEditProfile?: () => void;
 }
 
-export default function ProfileSettings({ onSignOut, onEditProfile }: ProfileSettingsProps) {
+export default function ProfileSettings({ onEditProfile }: ProfileSettingsProps) {
   const t = useTranslations("Profile.settings");
   const { theme, toggleTheme } = useTheme();
 
@@ -30,11 +31,6 @@ export default function ProfileSettings({ onSignOut, onEditProfile }: ProfileSet
       onClick: onEditProfile,
     },
     {
-      icon: "notifications",
-      label: t("notifications"),
-      iconBg: "bg-accent-blue",
-    },
-    {
       icon: "palette",
       label: t("appTheme"),
       iconBg: "bg-accent-blue",
@@ -42,11 +38,22 @@ export default function ProfileSettings({ onSignOut, onEditProfile }: ProfileSet
       onClick: toggleTheme,
     },
     {
-      icon: "logout",
-      label: t("signOut"),
+      icon: "favorite",
+      label: t("aboutCreator"),
+      iconBg: "bg-accent-blue",
+      onClick: () => window.open(AUTHOR_URL, "_blank", "noopener,noreferrer"),
+    },
+    {
+      icon: "restart_alt",
+      label: t("resetData"),
       iconBg: "bg-accent-red",
       labelColor: "text-accent-red",
-      onClick: onSignOut,
+      onClick: () => {
+        if (window.confirm(t("resetConfirm"))) {
+          resetLocalData();
+          window.location.href = "/";
+        }
+      },
     },
   ];
 
@@ -70,16 +77,14 @@ export default function ProfileSettings({ onSignOut, onEditProfile }: ProfileSet
                 {item.label}
               </span>
             </div>
-            {item.label !== t("signOut") && (
-              <div className="flex items-center gap-2">
-                {item.rightText && (
-                  <span className="text-xs font-bold text-slate-500 uppercase">
-                    {item.rightText}
-                  </span>
-                )}
-                <MaterialIcon name="chevron_right" className="text-slate-600" />
-              </div>
-            )}
+            <div className="flex items-center gap-2">
+              {item.rightText && (
+                <span className="text-xs font-bold text-slate-500 uppercase">
+                  {item.rightText}
+                </span>
+              )}
+              <MaterialIcon name="chevron_right" className="text-slate-600" />
+            </div>
           </button>
         ))}
       </div>

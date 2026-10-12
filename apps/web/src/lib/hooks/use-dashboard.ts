@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { vnToday, getVNWeek } from "@/lib/date-utils";
+import { localFetch } from "@/lib/local-api";
 
 export interface DashboardGoalStreak {
   id: string;
@@ -50,7 +51,7 @@ export function useDashboard() {
 
   const fetchDashboard = useCallback(async () => {
     try {
-      const res = await fetch(`/api/dashboard?date=${today}`);
+      const res = await localFetch(`/api/dashboard?date=${today}`);
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.error || "Failed to fetch dashboard");
@@ -70,7 +71,7 @@ export function useDashboard() {
     const start = week[0].date;
     const end = week[6].date;
     try {
-      const res = await fetch(`/api/habit-logs/week?start=${start}&end=${end}`);
+      const res = await localFetch(`/api/habit-logs/week?start=${start}&end=${end}`);
       if (res.ok) {
         const json: WeekSummary = await res.json();
         setWeekSummary(json);
@@ -89,22 +90,25 @@ export function useDashboard() {
       setLoadingGoals(prev => new Set(prev).add(goalId));
 
       try {
-        const res = await fetch(`/api/goal-streaks/${goalId}`, {
+        const res = await localFetch(`/api/goal-streaks/${goalId}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ action, date: today }),
         });
 
         if (res.ok) {
+          const updated: { title?: string; unlocked?: string[] } = await res.json();
           await fetchDashboard();
-          const goal = data?.todayStreaks.find(g => g.id === goalId) || data?.goalStreaks.find(g => g.id === goalId);
-          const goalTitle = goal?.title || "Goal";
+          const goalTitle = updated.title || "Goal";
+          const unlocked = updated.unlocked ?? [];
 
           setNotification({
             type: 'success',
-            message: action === 'increment'
-              ? `${goalTitle} checked in successfully!`
-              : `${goalTitle} checked out successfully!`
+            message: unlocked.length > 0
+              ? `🏆 Unlocked: ${unlocked.join(", ")}!`
+              : action === 'increment'
+                ? `${goalTitle} checked in successfully!`
+                : `${goalTitle} checked out successfully!`
           });
         } else {
           const err = await res.json();
@@ -126,13 +130,13 @@ export function useDashboard() {
         setTimeout(() => setNotification(null), 3000);
       }
     },
-    [fetchDashboard, today, data, loadingGoals]
+    [fetchDashboard, today, loadingGoals]
   );
 
   const deleteGoalStreak = useCallback(
     async (goalId: string) => {
       try {
-        const res = await fetch(`/api/goal-streaks/${goalId}`, { method: "DELETE" });
+        const res = await localFetch(`/api/goal-streaks/${goalId}`, { method: "DELETE" });
         if (res.ok) await fetchDashboard();
       } catch { /* silent */ }
     },
@@ -142,7 +146,7 @@ export function useDashboard() {
   const editGoalStreak = useCallback(
     async (goalId: string, fields: Record<string, unknown>) => {
       try {
-        const res = await fetch(`/api/goal-streaks/${goalId}`, {
+        const res = await localFetch(`/api/goal-streaks/${goalId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(fields),

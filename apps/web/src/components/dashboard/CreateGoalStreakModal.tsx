@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import MaterialIcon from "@/components/icons/MaterialIcon";
 import { useTranslations } from "next-intl";
+import { localFetch } from "@/lib/local-api";
 
 interface CreateGoalStreakModalProps {
   open: boolean;
@@ -127,7 +128,7 @@ export default function CreateGoalStreakModal({
     setError("");
 
     try {
-      const res = await fetch("/api/goal-streaks", {
+      const res = await localFetch("/api/goal-streaks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import MaterialIcon from "@/components/icons/MaterialIcon";
 import { vnToday } from "@/lib/date-utils";
 import { useTranslations } from "next-intl";
+import { localFetch } from "@/lib/local-api";
 
 interface DoDontRule {
   id: string;
@@ -33,7 +34,7 @@ export default function DoDontTracker() {
 
   const fetchRules = useCallback(async () => {
     try {
-      const res = await fetch(`/api/dashboard?date=${today}`);
+      const res = await localFetch(`/api/dashboard?date=${today}`);
       if (res.ok) {
         const data = await res.json();
         setRules(data.doDonts ?? []);
@@ -54,7 +55,7 @@ export default function DoDontTracker() {
     setLoadingIds((prev) => new Set(prev).add(ruleId));
     try {
       const action = checkedToday ? "decrement" : "increment";
-      await fetch(`/api/goal-streaks/${ruleId}`, {
+      await localFetch(`/api/goal-streaks/${ruleId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action, date: today }),

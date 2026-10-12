@@ -22,7 +22,7 @@ export default function Toast({ type, message, onClose, autoClose = true }: Toas
   const icon = type === 'success' ? 'check_circle' : 'error';
 
   return (
-    <div className={`fixed top-4 right-4 z-50 ${bgColor} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 min-w-[300px] max-w-[400px] animate-in slide-in-from-top-2 fade-in-0 duration-300`}>
+    <div className={`fixed top-14 right-4 z-50 ${bgColor} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 min-w-[300px] max-w-[400px] animate-in slide-in-from-top-2 fade-in-0 duration-300`}>
       <MaterialIcon name={icon} className="text-xl flex-shrink-0" />
       <p className="text-sm font-medium flex-1">{message}</p>
       {onClose && (

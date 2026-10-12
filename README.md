@@ -1,6 +1,8 @@
 # Habit Streaks PWA
 
-A Progressive Web App for tracking daily habits, building streaks, and earning rewards. Built with Next.js, TypeScript, Tailwind CSS, and Supabase.
+A Progressive Web App for tracking daily habits, building streaks, and earning rewards. Built with Next.js, TypeScript, and Tailwind CSS.
+
+This is a **frontend-only demo**: there is no backend or database. All data is stored in the browser's `localStorage`, and first-time visitors get sample data to play with.
 
 ## Monorepo Structure
 
@@ -19,12 +21,9 @@ habit-streaks/
 │   │   │   │   ├── dashboard/      # WeeklyCalendar, Stats, Tasks, GoalStreaks
 │   │   │   │   ├── achievements/   # StreakCounter, Heatmap, Badges, Rewards, XP
 │   │   │   │   └── daily-log/      # DailyLogHeader, HabitChecklist, CompletionCard
-│   │   │   ├── lib/            # Supabase client config & types
-│   │   │   └── middleware.ts   # Supabase auth session refresh
+│   │   │   ├── lib/            # localStorage data layer (local-api.ts), hooks, utils
+│   │   │   └── middleware.ts   # Default locale cookie
 │   │   └── public/             # PWA manifest & icons
-│   └── supabase/
-│       └── migrations/         # PostgreSQL migration files
-│           └── 00001_initial_schema.sql
 └── package.json                # Root scripts
 ```
 
@@ -34,39 +33,12 @@ habit-streaks/
 
 - Node.js >= 18
 - npm >= 9
-- A [Supabase](https://supabase.com) project (free tier works)
 
 ### Installation
 
 ```bash
 cd apps/web
 npm install
-```
-
-### Environment Variables
-
-Copy the example env file and fill in your Supabase project credentials:
-
-```bash
-cp apps/web/.env.example apps/web/.env.local
-```
-
-You need two values from your Supabase dashboard (Settings → API):
-- `NEXT_PUBLIC_SUPABASE_URL` — Project URL
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY` — `anon` / `public` key
-
-### Database Setup
-
-Run the SQL migration in your Supabase project:
-
-1. Open the **SQL Editor** in your Supabase Dashboard
-2. Paste the contents of `apps/supabase/migrations/00001_initial_schema.sql`
-3. Click **Run**
-
-Or use the Supabase CLI:
-
-```bash
-npx supabase db push
 ```
 
 ### Development
@@ -81,19 +53,10 @@ npm run dev
 npm run build
 ```
 
-### Regenerate Database Types
-
-After schema changes, regenerate the TypeScript types:
-
-```bash
-npm run db:types
-```
-
 ## Tech Stack
 
 - **Frontend**: Next.js 14, React 18, TypeScript, Tailwind CSS
-- **Backend**: Supabase (Auth, PostgreSQL, Row Level Security)
-- **Auth**: Supabase Auth with SSR cookie-based sessions via `@supabase/ssr`
+- **Data**: Browser `localStorage` (no backend). Clear site data to reset to the demo seed.
 - **PWA**: Web App Manifest, Service Worker ready
 - **Font**: Plus Jakarta Sans (Google Fonts)
 - **Icons**: Material Symbols Outlined (Google Fonts)
@@ -121,22 +84,6 @@ npm run db:types
 - Negative habits checklist ("The Don'ts")
 - Streak completion celebration card
 
-## Supabase Backend
+## Copyright
 
-### PostgreSQL Tables
-- `profiles` — User profiles (level, XP), auto-created on signup via trigger
-- `habits` — Habit definitions (title, icon, positive/negative type)
-- `habit_logs` — Daily habit completion logs (unique per habit+date)
-- `goal_streaks` — Goal streak tracking with current/longest streak
-- `achievements` — Unlocked achievements per user
-- `rewards` — Earned rewards with redeem status
-
-### Row Level Security (RLS)
-- All tables have RLS enabled
-- Users can only read/write their own data
-- Achievements are read-only for users (managed server-side)
-- Rewards allow user updates only for the `redeemed` field
-
-### Database Functions
-- `handle_new_user()` — Trigger that auto-creates a profile on auth signup
-- `award_xp(user_id, amount)` — RPC function to award XP and recalculate level
+© FlowStreaks. Designed & built by [Hàn Kim Thủy](https://hankimthuy.com/en/connect).

@@ -2,6 +2,7 @@
 
 import MaterialIcon from "@/components/icons/MaterialIcon";
 import BottomNav from "@/components/layout/BottomNav";
+import AppCredit from "@/components/layout/AppCredit";
 import BackButton from "@/components/layout/BackButton";
 import MonthlyCompletion from "@/components/stats/MonthlyCompletion";
 import DoVsDontChart from "@/components/stats/DoVsDontChart";
@@ -20,7 +21,7 @@ export default function StatsPage() {
 
   return (
     <>
-      <header className="pt-10 pb-6 px-6 flex items-center justify-between sticky top-0 z-20 bg-background-dark">
+      <header className="pt-10 pb-6 px-6 flex items-center justify-between sticky top-11 z-20 bg-background-dark">
         <div className="flex items-center gap-4">
           <BackButton />
           <h1 className="text-xl font-extrabold tracking-tight">{t("title")}</h1>
@@ -54,6 +55,7 @@ export default function StatsPage() {
             </p>
           </section>
         </div>
+        <AppCredit />
       </main>
       <BottomNav />
     </>

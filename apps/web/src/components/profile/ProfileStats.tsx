@@ -4,14 +4,11 @@ import MaterialIcon from "@/components/icons/MaterialIcon";
 import { useTranslations } from "next-intl";
 
 interface ProfileStatsProps {
-  totalStreaks?: number;
-  giftsEarned?: number;
+  totalStreaks: number;
+  giftsEarned: number;
 }
 
-export default function ProfileStats({
-  totalStreaks = 458,
-  giftsEarned = 24,
-}: ProfileStatsProps) {
+export default function ProfileStats({ totalStreaks, giftsEarned }: ProfileStatsProps) {
   const t = useTranslations("Profile.stats");
 
   return (

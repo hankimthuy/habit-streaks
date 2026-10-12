@@ -77,7 +77,8 @@ export default function EditProfileModal({
           </button>
           <button
             onClick={() => onSave(name, username)}
-            className="px-6 py-3 rounded-full font-bold text-white bg-primary hover:bg-primary-hover transition-colors shadow-glow"
+            disabled={!name.trim()}
+            className="px-6 py-3 rounded-full font-bold text-white bg-primary hover:bg-primary-hover transition-colors shadow-glow disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {t("save")}
           </button>

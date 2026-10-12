@@ -1,6 +1,7 @@
 "use client";
 
 import BottomNav from "@/components/layout/BottomNav";
+import AppCredit from "@/components/layout/AppCredit";
 import DailyLogHeader from "@/components/daily-log/DailyLogHeader";
 import StreakCompletionCard from "@/components/daily-log/StreakCompletionCard";
 import TodayStreaks from "@/components/dashboard/TodayStreaks";
@@ -42,7 +43,7 @@ export default function DailyLogPage() {
             )}
           </>
         )}
-        <div className="h-8" />
+        <AppCredit />
       </div>
       <BottomNav />
       {notification && (

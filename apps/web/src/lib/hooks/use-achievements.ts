@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { localFetch } from "@/lib/local-api";
 
 export interface AchievementData {
   id: string;
@@ -69,7 +70,7 @@ export function useAchievements() {
 
   const fetchAchievements = useCallback(async () => {
     try {
-      const res = await fetch("/api/achievements");
+      const res = await localFetch("/api/achievements");
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.error || "Failed to fetch achievements");
@@ -83,7 +84,7 @@ export function useAchievements() {
 
   const fetchRewards = useCallback(async () => {
     try {
-      const res = await fetch("/api/rewards");
+      const res = await localFetch("/api/rewards");
       if (!res.ok) return;
       const json: RewardData[] = await res.json();
       setRewards(json);
@@ -94,7 +95,7 @@ export function useAchievements() {
 
   const fetchProfile = useCallback(async () => {
     try {
-      const res = await fetch("/api/profile");
+      const res = await localFetch("/api/profile");
       if (!res.ok) return;
       const json: ProfileData = await res.json();
       setProfile(json);
@@ -107,7 +108,7 @@ export function useAchievements() {
     try {
       const today = new Date();
       const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-      const res = await fetch(`/api/dashboard?date=${dateStr}`);
+      const res = await localFetch(`/api/dashboard?date=${dateStr}`);
       if (!res.ok) return;
       const json = await res.json();
       setCurrentStreak(json.stats?.currentStreak ?? 0);
@@ -118,7 +119,7 @@ export function useAchievements() {
 
   const fetchActivity = useCallback(async (tf: Timeframe) => {
     try {
-      const res = await fetch(`/api/activity?timeframe=${tf.toLowerCase()}`);
+      const res = await localFetch(`/api/activity?timeframe=${tf.toLowerCase()}`);
       if (!res.ok) return;
       const json: ActivityData = await res.json();
       setActivity(json);
@@ -126,6 +127,11 @@ export function useAchievements() {
       // silently fail for activity
     }
   }, []);
+
+  const redeemReward = useCallback(async (id: string) => {
+    const res = await localFetch(`/api/rewards/${id}`, { method: "PATCH" });
+    if (res.ok) await fetchRewards();
+  }, [fetchRewards]);
 
   const changeTimeframe = useCallback((tf: Timeframe) => {
     setTimeframe(tf);
@@ -159,6 +165,7 @@ export function useAchievements() {
     currentStreak,
     timeframe,
     changeTimeframe,
+    redeemReward,
     loading,
     error,
     unlockedCount,

@@ -1,19 +1,20 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import Avatar from "@/components/profile/Avatar";
 
 interface ProfileHeaderProps {
-  avatarUrl?: string;
-  displayName?: string;
+  avatarUrl?: string | null;
+  displayName: string;
   username?: string;
-  level?: number;
+  level: number;
 }
 
 export default function ProfileHeader({
-  avatarUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuBmL0dE48NK0iF23YvzQ-gSNVkNQC36GFh8ySGyQZERGLjcnuar87QbmC42hxxOtcalZ2-Wk1IbYP588aKvsXdK4MTXgcXDGZcoZqZDsL7oZbd2HKU64dWMl5vOIJVCvlSo3eDhhHOEZqY12NkftXRMCX7whZmccBuXsL0XI1ftzf5lMZH0gSR_y9Eg3DXL1gVEh9Vzsuh762y6rqZXgzolg6SEQzJqxaIYt2brAG3RRAE-1GmjUkxiotUxPvOnOL_TxvhK2JNqZ0Ez",
-  displayName = "Alex Rivera",
-  username = "@habit_striker",
-  level = 12,
+  avatarUrl,
+  displayName,
+  username,
+  level,
 }: ProfileHeaderProps) {
   const t = useTranslations("Profile.header");
 
@@ -22,11 +23,7 @@ export default function ProfileHeader({
       <div className="relative">
         <div className="w-32 h-32 rounded-full p-1 bg-primary">
           <div className="w-full h-full rounded-full overflow-hidden border-4 border-background-dark">
-            <img
-              alt="User Avatar"
-              className="w-full h-full object-cover"
-              src={avatarUrl}
-            />
+            <Avatar name={displayName} url={avatarUrl} className="text-4xl" />
           </div>
         </div>
         <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-black px-3 py-1 rounded-full shadow-lg border-2 border-background-dark whitespace-nowrap uppercase tracking-wider">
