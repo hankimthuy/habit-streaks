@@ -1,6 +1,5 @@
 "use client";
 
-import MaterialIcon from "@/components/icons/MaterialIcon";
 import BottomNav from "@/components/layout/BottomNav";
 import AppCredit from "@/components/layout/AppCredit";
 import BackButton from "@/components/layout/BackButton";
@@ -23,6 +22,7 @@ export default function AchievementsPage() {
     currentStreak,
     timeframe,
     changeTimeframe,
+    redeemReward,
     loading,
   } = useAchievements();
 
@@ -33,9 +33,7 @@ export default function AchievementsPage() {
         <div className="flex items-center justify-between p-4">
           <BackButton />
           <h1 className="text-lg font-bold tracking-tight">{t("title")}</h1>
-          <button className="text-slate-400 hover:text-white transition-colors">
-            <MaterialIcon name="settings" />
-          </button>
+          <div className="w-6" />
         </div>
         <StreakCounter streak={currentStreak} />
         <TimeframeToggle value={timeframe} onChange={changeTimeframe} />
@@ -51,7 +49,7 @@ export default function AchievementsPage() {
         ) : (
           <>
             <BadgesCarousel achievements={achievements} />
-            <RewardCard rewards={rewards} />
+            <RewardCard rewards={rewards} onRedeem={redeemReward} />
             <XPProgress profile={profile} currentStreak={currentStreak} />
           </>
         )}

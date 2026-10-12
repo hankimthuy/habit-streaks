@@ -165,9 +165,6 @@ export default function GoalStreaks({ goals, onLog, onDelete, onEdit, loadingGoa
     <section>
       <div className="flex items-center justify-between mb-4 px-1 mt-2">
         <h2 className="text-xl font-bold">{t("goalStreaks")}</h2>
-        <button className="text-xs font-bold text-primary hover:text-white transition-colors">
-          {t("viewAll")}
-        </button>
       </div>
       <div className="flex flex-col gap-4">
         {goals.map((goal) => (

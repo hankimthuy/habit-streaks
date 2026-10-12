@@ -7,10 +7,17 @@
  * can keep their fetch-style code. All data lives in the visitor's browser.
  */
 
-import { ACHIEVEMENT_DEFINITIONS } from "@/lib/constants/leveling";
+import {
+  ACHIEVEMENT_DEFINITIONS,
+  XP_ACHIEVEMENT_UNLOCK,
+  XP_CHECKIN,
+  XP_STREAK_30,
+  XP_STREAK_7,
+  getLevel,
+} from "@/lib/constants/leveling";
 import { formatDateISO, vnToday } from "@/lib/date-utils";
 
-const STORAGE_KEY = "flowstreaks:data:v1";
+export const STORAGE_KEY = "flowstreaks:data:v2";
 const USER_ID = "local-user";
 
 type Mode = "daily" | "free" | "do_dont";
@@ -33,30 +40,47 @@ interface GoalStreak {
   created_at: string;
 }
 
-interface Habit {
+/** One row per check-in; the source of truth for history-based stats */
+interface Checkin {
   id: string;
-  user_id: string;
-  title: string;
-  subtitle: string;
-  icon: string;
-  type: string;
-  category: string;
+  goal_id: string;
+  date: string;
   created_at: string;
 }
 
-interface HabitLog {
+interface Achievement {
   id: string;
-  habit_id: string;
   user_id: string;
-  date: string;
-  completed: boolean;
+  name: string;
+  icon: string;
+  description: string;
+  unlocked: boolean;
+  unlocked_at: string | null;
   created_at: string;
+}
+
+interface Reward {
+  id: string;
+  user_id: string;
+  title: string;
+  description: string;
+  icon: string;
+  unlocked: boolean;
+  redeemed: boolean;
+  valid_until: string;
+  created_at: string;
+  /** Built-in unlock rule, or the goal whose completion granted it */
+  rule?: "streak_7" | "level_5";
+  /** Description shown once a rule-based reward unlocks */
+  unlocked_description?: string;
+  source_goal_id?: string;
 }
 
 interface Store {
   profile: {
     id: string;
     display_name: string;
+    username: string;
     email: string;
     avatar_url: string | null;
     level: number;
@@ -64,29 +88,10 @@ interface Store {
     created_at: string;
   };
   goalStreaks: GoalStreak[];
-  habits: Habit[];
-  habitLogs: HabitLog[];
-  achievements: {
-    id: string;
-    user_id: string;
-    name: string;
-    icon: string;
-    description: string;
-    unlocked: boolean;
-    unlocked_at: string | null;
-    created_at: string;
-  }[];
-  rewards: {
-    id: string;
-    user_id: string;
-    title: string;
-    description: string;
-    icon: string;
-    unlocked: boolean;
-    redeemed: boolean;
-    valid_until: string;
-    created_at: string;
-  }[];
+  checkins: Checkin[];
+  goalsCreated: number;
+  achievements: Achievement[];
+  rewards: Reward[];
 }
 
 function uid(): string {
@@ -102,128 +107,302 @@ function addDays(date: string, days: number): string {
   return formatDateISO(d);
 }
 
+function daysFromNow(n: number): string {
+  return new Date(Date.now() + n * 86400000).toISOString();
+}
+
 /** Demo data so a first-time visitor sees a populated app */
 function seedStore(): Store {
   const now = new Date().toISOString();
   const today = vnToday();
-  const unlocked = new Set(["First Step", "3-Day Spark", "Week Warrior", "Goal Setter", "Early Bird"]);
-  const daysFromNow = (n: number) => new Date(Date.now() + n * 86400000).toISOString();
+  const checkins: Checkin[] = [];
 
-  const gymId = uid();
-  const habitLogs: HabitLog[] = [];
-  for (let i = 1; i <= 35; i++) {
-    const date = addDays(today, -i);
-    if ([0, 1, 3, 5].includes(new Date(date + "T00:00:00").getDay())) {
-      habitLogs.push({ id: uid(), habit_id: gymId, user_id: USER_ID, date, completed: true, created_at: now });
-    }
-  }
-
-  const streak = (s: Partial<GoalStreak> & Pick<GoalStreak, "title" | "mode">): GoalStreak => ({
-    id: uid(),
-    user_id: USER_ID,
-    subtitle: "",
-    icon: "local_fire_department",
-    color: "primary",
-    target_days: 7,
-    current_streak: 0,
-    longest_streak: 0,
-    reward_title: null,
-    start_date: null,
-    end_date: null,
-    last_checkin_date: null,
-    created_at: now,
-    ...s,
-  });
-
-  return {
-    profile: {
-      id: USER_ID,
-      display_name: "Guest",
-      email: "",
-      avatar_url: null,
-      level: 3,
-      xp: 1350,
+  const streak = (
+    s: Partial<GoalStreak> & Pick<GoalStreak, "title" | "mode">,
+    pastCheckinDays: number
+  ): GoalStreak => {
+    const goal: GoalStreak = {
+      id: uid(),
+      user_id: USER_ID,
+      subtitle: "",
+      icon: "local_fire_department",
+      color: "primary",
+      target_days: 7,
+      current_streak: pastCheckinDays,
+      longest_streak: pastCheckinDays,
+      reward_title: null,
+      start_date: null,
+      end_date: null,
+      last_checkin_date: pastCheckinDays > 0 ? addDays(today, -1) : null,
       created_at: now,
-    },
-    goalStreaks: [
-      streak({
+      ...s,
+    };
+    for (let i = 1; i <= pastCheckinDays; i++) {
+      const date = addDays(today, -i);
+      checkins.push({ id: uid(), goal_id: goal.id, date, created_at: `${date}T08:00:00` });
+    }
+    return goal;
+  };
+
+  const goalStreaks = [
+    streak(
+      {
         title: "Morning Run",
         subtitle: "30 minutes every day",
         icon: "directions_run",
-        color: "primary",
         mode: "daily",
         target_days: 30,
-        current_streak: 5,
-        longest_streak: 5,
         start_date: addDays(today, -5),
         end_date: addDays(today, 24),
-      }),
-      streak({
+      },
+      5
+    ),
+    streak(
+      {
         title: "Drink Americano",
         subtitle: "7 times → Drink Milk Coffee",
         icon: "local_cafe",
         color: "amber",
         mode: "free",
-        target_days: 7,
-        current_streak: 1,
-        longest_streak: 1,
         reward_title: "Drink Milk Coffee",
-      }),
-      streak({
+      },
+      1
+    ),
+    streak(
+      {
         title: "No sugary drinks",
         icon: "no_drinks",
         color: "red",
         mode: "do_dont",
         target_days: 30,
-        start_date: addDays(today, -3),
-      }),
-    ],
-    habits: [
-      {
-        id: gymId,
-        user_id: USER_ID,
-        title: "Gym Workout",
-        subtitle: "4 days/week — Mon, Wed, Fri, Sun",
-        icon: "fitness_center",
-        type: "positive",
-        category: "Health",
-        created_at: now,
+        start_date: addDays(today, -2),
       },
-    ],
-    habitLogs,
+      2
+    ),
+  ];
+
+  const store: Store = {
+    profile: {
+      id: USER_ID,
+      display_name: "Guest",
+      username: "@guest",
+      email: "",
+      avatar_url: null,
+      level: 1,
+      xp: checkins.length * XP_CHECKIN,
+      created_at: now,
+    },
+    goalStreaks,
+    checkins,
+    goalsCreated: goalStreaks.length,
     achievements: ACHIEVEMENT_DEFINITIONS.map((a) => ({
       id: uid(),
       user_id: USER_ID,
       name: a.name,
       icon: a.icon,
       description: a.description,
-      unlocked: unlocked.has(a.name),
-      unlocked_at: unlocked.has(a.name) ? now : null,
+      unlocked: false,
+      unlocked_at: null,
       created_at: now,
     })),
     rewards: [
-      { title: "Free Milk Coffee", description: "You hit your 7-day Americano goal!", icon: "local_cafe", unlocked: true, valid_until: daysFromNow(90) },
-      { title: "Premium Dark Theme", description: "Reach Level 5 to unlock this exclusive theme", icon: "palette", unlocked: false, valid_until: daysFromNow(365) },
-      { title: "Streak Shield", description: "Protect your streak for 1 day if you miss", icon: "shield", unlocked: false, valid_until: daysFromNow(180) },
-    ].map((r) => ({ ...r, id: uid(), user_id: USER_ID, redeemed: false, created_at: now })),
+      {
+        title: "Streak Shield",
+        description: "Reach a 7-day streak to unlock",
+        unlocked_description: "Protect your streak for 1 day if you miss",
+        icon: "shield",
+        rule: "streak_7" as const,
+      },
+      {
+        title: "Premium Dark Theme",
+        description: "Reach Level 5 to unlock this exclusive theme",
+        unlocked_description: "Exclusive theme for reaching Level 5",
+        icon: "palette",
+        rule: "level_5" as const,
+      },
+    ].map((r) => ({
+      ...r,
+      id: uid(),
+      user_id: USER_ID,
+      unlocked: false,
+      redeemed: false,
+      valid_until: daysFromNow(365),
+      created_at: now,
+    })),
+  };
+  evaluateProgress(store);
+  return store;
+}
+
+// ── Progress rules ─────────────────────────────────────────────
+
+/** Daily and do/don't streaks break when a whole day passes without a check-in */
+function breakMissedStreaks(store: Store): boolean {
+  const yesterday = addDays(vnToday(), -1);
+  let changed = false;
+  for (const goal of store.goalStreaks) {
+    if (goal.mode === "free" || goal.current_streak === 0) continue;
+    if (!goal.last_checkin_date || goal.last_checkin_date < yesterday) {
+      goal.current_streak = 0;
+      changed = true;
+    }
+  }
+  return changed;
+}
+
+/** Goals that expect a check-in on a given date (free goals have no schedule) */
+function scheduledGoals(store: Store, date: string): GoalStreak[] {
+  return store.goalStreaks.filter((s) => {
+    if (s.mode === "free") return false;
+    if (s.mode === "daily" && (!s.start_date || !s.end_date)) return false;
+    if (s.start_date && date < s.start_date) return false;
+    if (s.end_date && date > s.end_date) return false;
+    return true;
+  });
+}
+
+function dailySummary(store: Store, date: string) {
+  const scheduled = scheduledGoals(store, date);
+  const checkedIds = new Set(store.checkins.filter((c) => c.date === date).map((c) => c.goal_id));
+  return {
+    total: scheduled.length,
+    completed: scheduled.filter((g) => checkedIds.has(g.id)).length,
+    anyCheckin: checkedIds.size > 0,
   };
 }
+
+function isPerfectDay(store: Store, date: string): boolean {
+  const { total, completed } = dailySummary(store, date);
+  return total > 0 && completed === total;
+}
+
+/** Longest run of consecutive perfect days ending today (or yesterday) */
+function perfectDayRun(store: Store): number {
+  let date = vnToday();
+  if (!isPerfectDay(store, date)) date = addDays(date, -1);
+  let run = 0;
+  while (isPerfectDay(store, date)) {
+    run++;
+    date = addDays(date, -1);
+  }
+  return run;
+}
+
+/** Weekends (Sat + Sun) with at least one check-in on each day */
+function activeWeekends(store: Store): number {
+  const dates = new Set(store.checkins.map((c) => c.date));
+  let count = 0;
+  for (const date of Array.from(dates)) {
+    if (new Date(date + "T00:00:00").getDay() === 6 && dates.has(addDays(date, 1))) count++;
+  }
+  return count;
+}
+
+function checkinHour(c: Checkin): number {
+  return new Date(c.created_at).getHours();
+}
+
+const ACHIEVEMENT_RULES: Record<string, (s: Store) => boolean> = {
+  "First Step": (s) => s.checkins.length >= 1,
+  "3-Day Spark": (s) => bestStreak(s) >= 3,
+  "Week Warrior": (s) => bestStreak(s) >= 7,
+  "Two-Week Titan": (s) => bestStreak(s) >= 14,
+  "Monthly Master": (s) => bestStreak(s) >= 30,
+  "60-Day Legend": (s) => bestStreak(s) >= 60,
+  "100-Day Hero": (s) => bestStreak(s) >= 100,
+  "Perfect Week": (s) => perfectDayRun(s) >= 7,
+  "Perfect Month": (s) => perfectDayRun(s) >= 30,
+  "Early Bird": (s) => s.checkins.some((c) => checkinHour(c) < 6),
+  "Night Owl": (s) => s.checkins.some((c) => checkinHour(c) >= 23),
+  "Weekend Warrior": (s) => activeWeekends(s) >= 4,
+  "Habit Collector": (s) => s.goalsCreated >= 5,
+  "Goal Setter": (s) => s.goalsCreated >= 1,
+  Overachiever: (s) => s.profile.xp >= 1000,
+};
+
+function bestStreak(store: Store): number {
+  return Math.max(0, ...store.goalStreaks.map((g) => g.longest_streak));
+}
+
+/**
+ * Unlock achievements and rewards whose conditions are now met.
+ * Returns the names of newly unlocked items so the UI can celebrate them.
+ */
+function evaluateProgress(store: Store): string[] {
+  const unlocked: string[] = [];
+  const now = new Date().toISOString();
+
+  // Loop because achievement XP can itself unlock XP-based items
+  for (let pass = 0; pass < 3; pass++) {
+    let changed = false;
+    store.profile.level = getLevel(store.profile.xp);
+
+    for (const a of store.achievements) {
+      if (a.unlocked || !ACHIEVEMENT_RULES[a.name]?.(store)) continue;
+      a.unlocked = true;
+      a.unlocked_at = now;
+      store.profile.xp += XP_ACHIEVEMENT_UNLOCK;
+      unlocked.push(a.name);
+      changed = true;
+    }
+
+    for (const r of store.rewards) {
+      if (r.unlocked) continue;
+      const met =
+        (r.rule === "streak_7" && bestStreak(store) >= 7) ||
+        (r.rule === "level_5" && getLevel(store.profile.xp) >= 5);
+      if (!met) continue;
+      r.unlocked = true;
+      r.description = r.unlocked_description ?? r.description;
+      r.valid_until = daysFromNow(90);
+      unlocked.push(r.title);
+      changed = true;
+    }
+
+    for (const g of store.goalStreaks) {
+      if (!g.reward_title || g.current_streak < g.target_days) continue;
+      if (store.rewards.some((r) => r.source_goal_id === g.id)) continue;
+      store.rewards.unshift({
+        id: uid(),
+        user_id: USER_ID,
+        title: g.reward_title,
+        description: `You completed "${g.title}"!`,
+        icon: g.icon,
+        unlocked: true,
+        redeemed: false,
+        valid_until: daysFromNow(90),
+        created_at: now,
+        source_goal_id: g.id,
+      });
+      unlocked.push(g.reward_title);
+      changed = true;
+    }
+
+    if (!changed) break;
+  }
+
+  store.profile.level = getLevel(store.profile.xp);
+  return unlocked;
+}
+
+// ── Storage ────────────────────────────────────────────────────
 
 let memoryStore: Store | null = null;
 
 function load(): Store {
-  if (memoryStore) return memoryStore;
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      memoryStore = JSON.parse(raw) as Store;
-      return memoryStore;
+  if (!memoryStore) {
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY);
+      if (raw) memoryStore = JSON.parse(raw) as Store;
+    } catch {
+      // storage unavailable or corrupt — fall back to fresh demo data
     }
-  } catch {
-    // storage unavailable or corrupt — fall back to fresh demo data
   }
-  memoryStore = seedStore();
-  save(memoryStore);
+  if (!memoryStore) {
+    memoryStore = seedStore();
+    save(memoryStore);
+  }
+  if (breakMissedStreaks(memoryStore)) save(memoryStore);
   return memoryStore;
 }
 
@@ -236,12 +415,24 @@ function save(store: Store) {
   }
 }
 
+/** Wipe everything and start again from the demo seed */
+export function resetLocalData() {
+  memoryStore = null;
+  try {
+    window.localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // ignore
+  }
+}
+
 function json(data: unknown, status = 200): Response {
   return new Response(JSON.stringify(data), {
     status,
     headers: { "Content-Type": "application/json" },
   });
 }
+
+// ── Read models ────────────────────────────────────────────────
 
 function rangeFor(timeframe: string): [string, string] {
   const now = new Date();
@@ -267,21 +458,18 @@ function rangeFor(timeframe: string): [string, string] {
 
 function getActivity(store: Store, timeframe: string) {
   const [startDate, endDate] = rangeFor(timeframe);
-  const habitsCount = store.habits.length || 1;
-
-  const completedByDate: Record<string, number> = {};
-  for (const log of store.habitLogs) {
-    if (log.date >= startDate && log.date <= endDate && log.completed) {
-      completedByDate[log.date] = (completedByDate[log.date] ?? 0) + 1;
-    }
-  }
 
   const days: { date: string; level: number; total: number; completed: number }[] = [];
   for (let d = startDate; d <= endDate; d = addDays(d, 1)) {
-    const completed = completedByDate[d] ?? 0;
-    const ratio = completed / habitsCount;
-    const level = completed === 0 ? 0 : ratio >= 1 ? 3 : ratio >= 0.5 ? 2 : 1;
-    days.push({ date: d, level, total: habitsCount, completed });
+    const { total, completed, anyCheckin } = dailySummary(store, d);
+    let level = 0;
+    if (total > 0 && completed > 0) {
+      const ratio = completed / total;
+      level = ratio >= 1 ? 3 : ratio >= 0.5 ? 2 : 1;
+    } else if (anyCheckin) {
+      level = 1;
+    }
+    days.push({ date: d, level, total, completed });
   }
 
   const totalDays = days.length;
@@ -314,7 +502,7 @@ function getDashboard(store: Store, date: string) {
   );
 
   const totalToday = todayStreaks.length;
-  const completedToday = todayStreaks.filter((s) => s.current_streak >= s.target_days).length;
+  const completedToday = todayStreaks.filter((s) => s.last_checkin_date === date).length;
 
   return {
     todayStreaks,
@@ -344,8 +532,8 @@ function getInsights(store: Store, date: string) {
     const active = streaks.filter(
       (s) => s.start_date && s.end_date && s.start_date <= rangeEnd && s.end_date >= rangeStart
     );
-    const completed = active.filter(
-      (s) => s.last_checkin_date && s.last_checkin_date >= rangeStart && s.last_checkin_date <= rangeEnd
+    const completed = active.filter((s) =>
+      store.checkins.some((c) => c.goal_id === s.id && c.date >= rangeStart && c.date <= rangeEnd)
     ).length;
     const total = active.length;
     return { total, completed, failed: total - completed, percentage: total > 0 ? Math.round((completed / total) * 100) : 0 };
@@ -359,29 +547,53 @@ function getInsights(store: Store, date: string) {
   };
 }
 
-function updateGoalStreak(store: Store, id: string, body: any): Response {
+// ── Mutations ──────────────────────────────────────────────────
+
+function checkInGoal(store: Store, id: string, body: any): Response {
   const goal = store.goalStreaks.find((s) => s.id === id);
   if (!goal) return json({ error: "Goal streak not found" }, 404);
 
-  const { action, current_streak, date } = body ?? {};
-  let newStreak = goal.current_streak;
-  let newLastCheckin = goal.last_checkin_date;
+  const { action, current_streak } = body ?? {};
+  const date: string = body?.date ?? vnToday();
+  const before = goal.current_streak;
 
   if (action === "increment") {
-    newStreak = Math.min(goal.current_streak + 1, goal.target_days);
-    if (date) newLastCheckin = date;
+    // Scheduled goals count once per day; free goals allow catch-up check-ins
+    if (goal.mode !== "free" && goal.last_checkin_date === date) {
+      return json({ error: "Already checked in today" }, 409);
+    }
+    if (goal.current_streak >= goal.target_days) {
+      return json({ error: "Goal already completed" }, 409);
+    }
+    goal.current_streak += 1;
+    goal.last_checkin_date = date;
+    store.checkins.push({ id: uid(), goal_id: goal.id, date, created_at: new Date().toISOString() });
+    store.profile.xp += XP_CHECKIN;
+    if (before < 7 && goal.current_streak >= 7) store.profile.xp += XP_STREAK_7;
+    if (before < 30 && goal.current_streak >= 30) store.profile.xp += XP_STREAK_30;
   } else if (action === "decrement") {
-    newStreak = Math.max(goal.current_streak - 1, 0);
-    if (date && goal.last_checkin_date === date) newLastCheckin = null;
+    if (goal.current_streak === 0) return json(goal);
+    // Undo the most recent check-in on this date (or the latest one for free goals)
+    let idx = -1;
+    store.checkins.forEach((c, i) => {
+      if (c.goal_id === goal.id && (goal.mode === "free" || c.date === date)) idx = i;
+    });
+    if (idx === -1) return json({ error: "Nothing to undo" }, 409);
+    store.checkins.splice(idx, 1);
+    goal.current_streak -= 1;
+    const remaining = store.checkins.filter((c) => c.goal_id === goal.id).map((c) => c.date).sort();
+    goal.last_checkin_date = remaining[remaining.length - 1] ?? null;
+    store.profile.xp = Math.max(0, store.profile.xp - XP_CHECKIN);
+    if (before >= 7 && goal.current_streak < 7) store.profile.xp = Math.max(0, store.profile.xp - XP_STREAK_7);
+    if (before >= 30 && goal.current_streak < 30) store.profile.xp = Math.max(0, store.profile.xp - XP_STREAK_30);
   } else if (typeof current_streak === "number") {
-    newStreak = Math.max(0, Math.min(current_streak, goal.target_days));
+    goal.current_streak = Math.max(0, Math.min(current_streak, goal.target_days));
   }
 
-  goal.current_streak = newStreak;
-  goal.longest_streak = Math.max(goal.longest_streak, newStreak);
-  goal.last_checkin_date = newLastCheckin;
+  goal.longest_streak = Math.max(goal.longest_streak, goal.current_streak);
+  const unlocked = evaluateProgress(store);
   save(store);
-  return json(goal);
+  return json({ ...goal, unlocked });
 }
 
 /** Drop-in replacement for `fetch("/api/...")` that reads/writes localStorage */
@@ -400,9 +612,37 @@ export async function localFetch(input: string, init?: RequestInit): Promise<Res
   if (path === "/api/rewards" && method === "GET") {
     return json([...store.rewards].sort((a, b) => Number(b.unlocked) - Number(a.unlocked)));
   }
-  if (path === "/api/profile" && method === "GET") {
-    return json(store.profile);
+  const rewardMatch = path.match(/^\/api\/rewards\/([^/]+)$/);
+  if (rewardMatch && method === "PATCH") {
+    const reward = store.rewards.find((r) => r.id === decodeURIComponent(rewardMatch[1]));
+    if (!reward) return json({ error: "Reward not found" }, 404);
+    if (!reward.unlocked) return json({ error: "Reward is still locked" }, 409);
+    reward.redeemed = true;
+    save(store);
+    return json(reward);
   }
+
+  if (path === "/api/profile") {
+    if (method === "GET") {
+      return json({
+        ...store.profile,
+        total_checkins: store.checkins.length,
+        rewards_earned: store.rewards.filter((r) => r.unlocked).length,
+        achievements_unlocked: store.achievements.filter((a) => a.unlocked).length,
+      });
+    }
+    if (method === "PUT") {
+      const name = String(body?.display_name ?? "").trim();
+      let username = String(body?.username ?? "").trim();
+      if (!name) return json({ error: "Name is required" }, 400);
+      if (username && !username.startsWith("@")) username = `@${username}`;
+      store.profile.display_name = name.slice(0, 40);
+      store.profile.username = username.slice(0, 30);
+      save(store);
+      return json(store.profile);
+    }
+  }
+
   if (path === "/api/activity" && method === "GET") {
     return json(getActivity(store, params.get("timeframe") || "month"));
   }
@@ -419,33 +659,11 @@ export async function localFetch(input: string, init?: RequestInit): Promise<Res
     const end = params.get("end");
     if (!start || !end) return json({ error: "start and end query params required" }, 400);
     const summary: Record<string, { total: number; completed: number }> = {};
-    for (const log of store.habitLogs) {
-      if (log.date < start || log.date > end) continue;
-      summary[log.date] ??= { total: 0, completed: 0 };
-      summary[log.date].total++;
-      if (log.completed) summary[log.date].completed++;
+    for (let d = start; d <= end; d = addDays(d, 1)) {
+      const { total, completed } = dailySummary(store, d);
+      if (total > 0) summary[d] = { total, completed };
     }
     return json(summary);
-  }
-
-  if (path === "/api/habits") {
-    if (method === "GET") return json([...store.habits].reverse());
-    if (method === "POST") {
-      if (!body?.title) return json({ error: "Title is required" }, 400);
-      const habit: Habit = {
-        id: uid(),
-        user_id: USER_ID,
-        title: body.title,
-        subtitle: body.subtitle ?? "",
-        icon: body.icon ?? "check_circle",
-        type: body.type ?? "positive",
-        category: body.category ?? "",
-        created_at: now,
-      };
-      store.habits.push(habit);
-      save(store);
-      return json(habit, 201);
-    }
   }
 
   if (path === "/api/goal-streaks") {
@@ -472,25 +690,28 @@ export async function localFetch(input: string, init?: RequestInit): Promise<Res
         created_at: now,
       };
       store.goalStreaks.push(goal);
+      store.goalsCreated += 1;
+      const unlocked = evaluateProgress(store);
       save(store);
-      return json(goal, 201);
+      return json({ ...goal, unlocked }, 201);
     }
   }
 
   const goalMatch = path.match(/^\/api\/goal-streaks\/([^/]+)$/);
   if (goalMatch) {
     const id = decodeURIComponent(goalMatch[1]);
-    if (method === "PATCH") return updateGoalStreak(store, id, body);
+    if (method === "PATCH") return checkInGoal(store, id, body);
     if (method === "PUT") {
       const goal = store.goalStreaks.find((s) => s.id === id);
       if (!goal) return json({ error: "Goal streak not found" }, 404);
-      const { id: _id, user_id: _uid, created_at: _c, ...fields } = body ?? {};
+      const { id: _id, user_id: _uid, created_at: _c, current_streak: _cs, longest_streak: _ls, last_checkin_date: _l, ...fields } = body ?? {};
       Object.assign(goal, fields);
       save(store);
       return json(goal);
     }
     if (method === "DELETE") {
       store.goalStreaks = store.goalStreaks.filter((s) => s.id !== id);
+      store.checkins = store.checkins.filter((c) => c.goal_id !== id);
       save(store);
       return json({ success: true });
     }

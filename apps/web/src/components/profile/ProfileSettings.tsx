@@ -4,6 +4,7 @@ import MaterialIcon from "@/components/icons/MaterialIcon";
 import { useTranslations } from "next-intl";
 import { useTheme } from "@/components/layout/ThemeContext";
 import { AUTHOR_URL } from "@/components/layout/AppCredit";
+import { resetLocalData } from "@/lib/local-api";
 
 interface SettingsItem {
   icon: string;
@@ -30,11 +31,6 @@ export default function ProfileSettings({ onEditProfile }: ProfileSettingsProps)
       onClick: onEditProfile,
     },
     {
-      icon: "notifications",
-      label: t("notifications"),
-      iconBg: "bg-accent-blue",
-    },
-    {
       icon: "palette",
       label: t("appTheme"),
       iconBg: "bg-accent-blue",
@@ -46,6 +42,18 @@ export default function ProfileSettings({ onEditProfile }: ProfileSettingsProps)
       label: t("aboutCreator"),
       iconBg: "bg-accent-blue",
       onClick: () => window.open(AUTHOR_URL, "_blank", "noopener,noreferrer"),
+    },
+    {
+      icon: "restart_alt",
+      label: t("resetData"),
+      iconBg: "bg-accent-red",
+      labelColor: "text-accent-red",
+      onClick: () => {
+        if (window.confirm(t("resetConfirm"))) {
+          resetLocalData();
+          window.location.href = "/";
+        }
+      },
     },
   ];
 

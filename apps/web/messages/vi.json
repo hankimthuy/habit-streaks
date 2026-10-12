@@ -126,22 +126,23 @@
             "level": "Cấp {level}"
         },
         "stats": {
-            "totalStreaks": "Tổng Chuỗi",
+            "totalStreaks": "Tổng lượt check-in",
             "giftsEarned": "Quà Đã Nhận"
         },
         "fireCollection": {
             "title": "Bộ Sưu Tập Lửa",
             "unlocked": "Mở khóa {count}",
-            "lockedText": "ĐÃ KHÓA"
+            "lockedLevel": "CẤP {level}"
         },
         "settings": {
             "title": "Cài đặt",
             "editProfile": "Sửa hồ sơ",
-            "notifications": "Cài đặt thông báo",
             "appTheme": "Giao diện",
             "themeDark": "Tối",
             "themeLight": "Sáng",
-            "aboutCreator": "Về tác giả"
+            "aboutCreator": "Về tác giả",
+            "resetData": "Xoá dữ liệu & bắt đầu lại",
+            "resetConfirm": "Xoá toàn bộ dữ liệu trên trình duyệt này và bắt đầu lại với dữ liệu mẫu?"
         },
         "edit": {
             "title": "Sửa hồ sơ",
@@ -166,21 +167,6 @@
                 "title": "Nên & Không Nên",
                 "desc": "Thiết lập quy tắc sống và theo dõi tuân thủ mỗi ngày"
             }
-        },
-        "habit": {
-            "title": "Tạo Thói Quen Mới",
-            "doThis": "Nên làm",
-            "avoidThis": "Nên tránh",
-            "habitName": "Tên Thói Quen",
-            "habitPlaceholder": "VD: Uống 2L Nước",
-            "desc": "Mô tả (Không bắt buộc)",
-            "descPlaceholder": "VD: Mục tiêu uống nước",
-            "category": "Danh mục (Không bắt buộc)",
-            "categoryPlaceholder": "VD: Sức khỏe, Học tập",
-            "icon": "Biểu tượng",
-            "errorNameReq": "Bắt buộc nhập tên thói quen",
-            "createBtn": "Tạo Thói Quen",
-            "creatingBtn": "Đang tạo..."
         },
         "streak": {
             "dailyTitle": "Chuỗi Hàng Ngày",

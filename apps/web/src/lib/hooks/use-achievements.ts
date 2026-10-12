@@ -128,6 +128,11 @@ export function useAchievements() {
     }
   }, []);
 
+  const redeemReward = useCallback(async (id: string) => {
+    const res = await localFetch(`/api/rewards/${id}`, { method: "PATCH" });
+    if (res.ok) await fetchRewards();
+  }, [fetchRewards]);
+
   const changeTimeframe = useCallback((tf: Timeframe) => {
     setTimeframe(tf);
     fetchActivity(tf);
@@ -160,6 +165,7 @@ export function useAchievements() {
     currentStreak,
     timeframe,
     changeTimeframe,
+    redeemReward,
     loading,
     error,
     unlockedCount,

@@ -97,15 +97,18 @@ export function useDashboard() {
         });
 
         if (res.ok) {
+          const updated: { title?: string; unlocked?: string[] } = await res.json();
           await fetchDashboard();
-          const goal = data?.todayStreaks.find(g => g.id === goalId) || data?.goalStreaks.find(g => g.id === goalId);
-          const goalTitle = goal?.title || "Goal";
+          const goalTitle = updated.title || "Goal";
+          const unlocked = updated.unlocked ?? [];
 
           setNotification({
             type: 'success',
-            message: action === 'increment'
-              ? `${goalTitle} checked in successfully!`
-              : `${goalTitle} checked out successfully!`
+            message: unlocked.length > 0
+              ? `🏆 Unlocked: ${unlocked.join(", ")}!`
+              : action === 'increment'
+                ? `${goalTitle} checked in successfully!`
+                : `${goalTitle} checked out successfully!`
           });
         } else {
           const err = await res.json();
@@ -127,7 +130,7 @@ export function useDashboard() {
         setTimeout(() => setNotification(null), 3000);
       }
     },
-    [fetchDashboard, today, data, loadingGoals]
+    [fetchDashboard, today, loadingGoals]
   );
 
   const deleteGoalStreak = useCallback(

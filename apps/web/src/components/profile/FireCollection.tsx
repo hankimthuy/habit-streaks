@@ -3,31 +3,25 @@
 import MaterialIcon from "@/components/icons/MaterialIcon";
 import { useTranslations } from "next-intl";
 
-export interface FireItem {
+interface FireItem {
   id: string;
   name: string;
   color: string;
-  borderColor: string;
-  unlocked: boolean;
+  requiredLevel: number;
 }
 
-interface FireCollectionProps {
-  items?: FireItem[];
-  unlockedCount?: number;
-}
-
-const defaultItems: FireItem[] = [
-  { id: "ice", name: "ICE", color: "bg-accent-blue", borderColor: "border-slate-700", unlocked: true },
-  { id: "classic", name: "CLASSIC", color: "bg-primary", borderColor: "border-primary", unlocked: true },
-  { id: "nature", name: "NATURE", color: "bg-accent-green", borderColor: "border-slate-700", unlocked: true },
-  { id: "locked1", name: "LOCKED", color: "bg-slate-800", borderColor: "border-dashed border-slate-700", unlocked: false },
+/** Fire styles unlock as the user levels up */
+const FIRES: FireItem[] = [
+  { id: "classic", name: "CLASSIC", color: "bg-primary", requiredLevel: 1 },
+  { id: "ice", name: "ICE", color: "bg-accent-blue", requiredLevel: 2 },
+  { id: "nature", name: "NATURE", color: "bg-accent-green", requiredLevel: 3 },
+  { id: "royal", name: "ROYAL", color: "bg-purple-500", requiredLevel: 5 },
+  { id: "inferno", name: "INFERNO", color: "bg-accent-red", requiredLevel: 10 },
 ];
 
-export default function FireCollection({
-  items = defaultItems,
-  unlockedCount = 6,
-}: FireCollectionProps) {
+export default function FireCollection({ level }: { level: number }) {
   const t = useTranslations("Profile.fireCollection");
+  const unlockedCount = FIRES.filter((f) => level >= f.requiredLevel).length;
 
   return (
     <section>
@@ -36,33 +30,30 @@ export default function FireCollection({
         <span className="text-xs font-bold text-primary">{t("unlocked", { count: unlockedCount })}</span>
       </div>
       <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-2">
-        {items.map((item) => (
-          <div
-            key={item.id}
-            className={`flex-shrink-0 w-20 h-24 bg-surface-dark rounded-2xl flex flex-col items-center justify-center gap-2 border ${item.borderColor} ${!item.unlocked ? "bg-surface-dark/50" : ""
-              }`}
-          >
+        {FIRES.map((item) => {
+          const unlocked = level >= item.requiredLevel;
+          return (
             <div
-              className={`w-12 h-12 ${item.color} rounded-xl flex items-center justify-center ${!item.unlocked ? "opacity-40" : ""
+              key={item.id}
+              className={`flex-shrink-0 w-20 h-24 rounded-2xl flex flex-col items-center justify-center gap-2 border ${unlocked
+                ? "bg-surface-dark border-slate-700"
+                : "bg-surface-dark/50 border-dashed border-slate-700"
                 }`}
             >
-              <MaterialIcon
-                name={item.unlocked ? "local_fire_department" : "lock"}
-                className="text-white text-3xl"
-              />
+              <div
+                className={`w-12 h-12 ${unlocked ? item.color : "bg-slate-800"} rounded-xl flex items-center justify-center`}
+              >
+                <MaterialIcon
+                  name={unlocked ? "local_fire_department" : "lock"}
+                  className={`text-3xl ${unlocked ? "text-white" : "text-slate-500"}`}
+                />
+              </div>
+              <span className={`text-[10px] font-black ${unlocked ? "text-slate-300" : "text-slate-600"}`}>
+                {unlocked ? item.name : t("lockedLevel", { level: item.requiredLevel })}
+              </span>
             </div>
-            <span
-              className={`text-[10px] font-black ${item.id === "classic"
-                  ? "text-primary"
-                  : item.unlocked
-                    ? "text-slate-400"
-                    : "text-slate-600"
-                }`}
-            >
-              {item.id === "locked1" ? t("lockedText") : item.name}
-            </span>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

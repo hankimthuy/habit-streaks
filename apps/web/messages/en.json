@@ -126,22 +126,23 @@
             "level": "Level {level}"
         },
         "stats": {
-            "totalStreaks": "Total Streaks",
+            "totalStreaks": "Total Check-ins",
             "giftsEarned": "Gifts Earned"
         },
         "fireCollection": {
             "title": "Your Fire Collection",
             "unlocked": "{count} Unlocked",
-            "lockedText": "LOCKED"
+            "lockedLevel": "LV {level}"
         },
         "settings": {
             "title": "Settings",
             "editProfile": "Edit Profile",
-            "notifications": "Notification Settings",
             "appTheme": "App Theme",
             "themeDark": "Dark",
             "themeLight": "Light",
-            "aboutCreator": "About the Creator"
+            "aboutCreator": "About the Creator",
+            "resetData": "Reset Demo Data",
+            "resetConfirm": "Delete all data in this browser and start over with sample data?"
         },
         "edit": {
             "title": "Edit Profile",
@@ -166,21 +167,6 @@
                 "title": "Do's & Don'ts",
                 "desc": "Set life rules and track your daily compliance"
             }
-        },
-        "habit": {
-            "title": "Create New Habit",
-            "doThis": "Do This",
-            "avoidThis": "Avoid This",
-            "habitName": "Habit Name",
-            "habitPlaceholder": "e.g. Drink 2L Water",
-            "desc": "Description (optional)",
-            "descPlaceholder": "e.g. Hydration goal",
-            "category": "Category (optional)",
-            "categoryPlaceholder": "e.g. Health, Learning",
-            "icon": "Icon",
-            "errorNameReq": "Habit name is required",
-            "createBtn": "Create Habit",
-            "creatingBtn": "Creating..."
         },
         "streak": {
             "dailyTitle": "Daily Streak",

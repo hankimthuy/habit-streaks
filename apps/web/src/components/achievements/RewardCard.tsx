@@ -6,9 +6,10 @@ import { useTranslations } from "next-intl";
 
 interface RewardCardProps {
   rewards: RewardData[];
+  onRedeem?: (id: string) => void;
 }
 
-export default function RewardCard({ rewards }: RewardCardProps) {
+export default function RewardCard({ rewards, onRedeem }: RewardCardProps) {
   const t = useTranslations("Achievements.rewards");
 
   if (rewards.length === 0) return null;
@@ -77,7 +78,9 @@ export default function RewardCard({ rewards }: RewardCardProps) {
                   {r.description}
                 </p>
                 {r.unlocked && !r.redeemed && (
-                  <button className="w-full bg-primary/80 hover:bg-primary text-white text-[10px] font-bold py-1.5 rounded-lg transition-colors">
+                  <button
+                    onClick={() => onRedeem?.(r.id)}
+                    className="w-full bg-primary/80 hover:bg-primary text-white text-[10px] font-bold py-1.5 rounded-lg transition-colors">
                     {t("redeem")}
                   </button>
                 )}
